@@ -3,285 +3,206 @@
 /**
  * Plugin Name: FAR-Panorama
  * Description: Gestion simplifiée de panoramas 360° Marzipano dans WordPress.
- * Version: 1.1.0
+ * Version: 1.0.0
  * Author: Nycalith (JB)
  * License: GPL2
  */
 
-
 if (!defined('ABSPATH')) exit;
 
-// 1) Check ACF à l'activation
-function facile_panorama_check_acf_active()
+// 1. Vérifie que ACF est activé
+function far_panorama_check_acf_active()
 {
     if (!class_exists('ACF')) {
         deactivate_plugins(plugin_basename(__FILE__));
         add_action('admin_notices', function () {
-            echo '<div class="error"><p><strong>FacilePanorama :</strong> Le plugin <strong>ACF</strong> doit être activé.</p></div>';
+            echo '<div class="error"><p><strong>FAR-Panorama :</strong> Le plugin ACF est requis.</p></div>';
         });
     }
 }
-register_activation_hook(__FILE__, 'facile_panorama_check_acf_active');
+register_activation_hook(__FILE__, 'far_panorama_check_acf_active');
 
 add_action('admin_notices', function () {
     if (!class_exists('ACF')) {
-        echo '<div class="error"><p><strong>FAR-Panorama :</strong> Activez <strong>ACF</strong> pour que le plugin fonctionne.</p></div>';
+        echo '<div class="error"><p><strong>FAR-Panorama :</strong> Activez ACF pour que le plugin fonctionne.</p></div>';
     }
 });
 
-// 2) Register CPT (sans UI WP natif)
+// 2. Enregistrement du CPT
 add_action('init', function () {
-    $labels = [
-        'name' => 'Panoramas',
-        'singular_name' => 'Panorama',
-        'menu_name' => 'Mes Panoramas',
-        'add_new_item' => 'Ajouter un nouveau panorama',
-        'edit_item' => 'Modifier le panorama',
-        'new_item' => 'Nouveau panorama',
-        'view_item' => 'Voir le panorama',
-        'search_items' => 'Rechercher un panorama',
-        'not_found' => 'Aucun panorama trouvé',
-        'not_found_in_trash' => 'Aucun panorama dans la corbeille',
-    ];
-
     register_post_type('panorama', [
-        'labels' => $labels,
+        'labels' => [
+            'name' => 'Panoramas',
+            'singular_name' => 'Panorama',
+            'menu_name' => 'Mes Panoramas'
+        ],
         'public' => false,
         'show_ui' => false,
         'show_in_rest' => true,
         'supports' => ['title'],
-        'has_archive' => false,
     ]);
 });
 
-// 3) Menu + sous-menus custom
+// 3. Ajout menu admin
 add_action('admin_menu', function () {
-    add_menu_page(
-        'Mes Panoramas',
-        'Mes Panoramas',
-        'publish_posts',
-        'facile-panorama-list',
-        'facile_panorama_list_page',
-        'dashicons-format-image',
-        20
-    );
-
-    add_submenu_page(
-        'facile-panorama-list',
-        'Liste des panoramas',
-        'Mes panoramas',
-        'publish_posts',
-        'facile-panorama-list',
-        'facile_panorama_list_page'
-    );
-
-    add_submenu_page(
-        'facile-panorama-list',
-        'Ajouter un panorama',
-        'Ajouter un nouveau panorama',
-        'publish_posts',
-        'facile-panorama-upload',
-        'facile_panorama_upload_page'
-    );
+    add_menu_page('Mes Panoramas', 'Mes Panoramas', 'publish_posts', 'far-panorama-list', 'far_panorama_list_page', 'dashicons-format-image');
+    add_submenu_page('far-panorama-list', 'Mes Panoramas', 'Liste', 'publish_posts', 'far-panorama-list', 'far_panorama_list_page');
+    add_submenu_page('far-panorama-list', 'Ajouter un panorama', 'Ajouter', 'publish_posts', 'far-panorama-upload', 'far_panorama_upload_page');
 });
 
-// 4) Page liste panoramas (tableau simple)
-function facile_panorama_list_page()
-{
-?>
-    <div class="wrap">
-        <h1>Mes Panoramas</h1>
-
-        <?php if (isset($_GET['updated']) && $_GET['updated'] === '1'): ?>
-            <div class="notice notice-success">
-                <p>✅ Panorama mis à jour avec succès !</p>
-            </div>
-        <?php endif; ?>
-
-        <?php
-        $panoramas = get_posts([
-            'post_type' => 'panorama',
-            'posts_per_page' => -1,
-            'post_status' => 'publish',
-        ]);
-        if (!$panoramas) {
-            echo '<p>Aucun panorama trouvé. <a href="' . admin_url('admin.php?page=facile-panorama-upload') . '">Ajoutez-en un</a>.</p>';
-            return;
-        }
-        ?>
-
-        <table class="wp-list-table widefat fixed striped">
-            <thead>
-                <tr>
-                    <th>Titre</th>
-                    <th>Shortcode</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($panoramas as $p): ?>
-                    <tr>
-                        <td><?php echo esc_html($p->post_title); ?></td>
-                        <td><code>[panorama id="<?php echo $p->ID; ?>"]</code></td>
-                        <td><a href="<?php echo admin_url('admin.php?page=facile-panorama-upload&update_id=' . $p->ID); ?>" class="button">Mettre à jour</a></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-<?php
-}
-
-// 5) Page upload + mise à jour minimaliste
-function facile_panorama_upload_page()
-{
-    $update_id = isset($_GET['update_id']) ? intval($_GET['update_id']) : 0;
-    $is_update = $update_id > 0;
-?>
-    <div class="wrap">
-        <h1><?php echo $is_update ? 'Mettre à jour un panorama' : 'Téléversez votre archive .zip de panorama'; ?></h1>
-
-        <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
-            <div class="notice notice-success">
-                <p>✅ Panorama <?php echo $is_update ? 'mis à jour' : 'prêt'; ?> !</p>
-                <p>Shortcode : <code>[panorama id="<?php echo esc_html($update_id ?: $_GET['new_id']); ?>"]</code></p>
-                <p>Collez ce shortcode là où vous voulez afficher le panorama.</p>
-            </div>
-        <?php endif; ?>
-
-        <form method="post" enctype="multipart/form-data">
-            <?php wp_nonce_field('facile_panorama_upload', 'facile_panorama_nonce'); ?>
-            <input type="file" name="panorama_zip" accept=".zip" required>
-            <?php if ($is_update): ?>
-                <input type="hidden" name="update_id" value="<?php echo $update_id; ?>">
-            <?php endif; ?>
-            <p><input type="submit" name="submit_panorama" class="button button-primary" value="<?php echo $is_update ? 'Mettre à jour' : 'Téléverser'; ?>"></p>
-        </form>
-    </div>
-<?php
-}
-
-// 6) Gestion upload + unzip
+// 4. Traitement : Upload / Update
 add_action('admin_init', function () {
-    if (isset($_POST['submit_panorama']) && check_admin_referer('facile_panorama_upload', 'facile_panorama_nonce')) {
+    if (isset($_POST['submit_panorama']) && check_admin_referer('far_panorama_upload', 'far_panorama_nonce')) {
         if (!empty($_FILES['panorama_zip']['tmp_name'])) {
-            $file = $_FILES['panorama_zip'];
             require_once ABSPATH . 'wp-admin/includes/file.php';
-            $upload = wp_handle_upload($file, ['test_form' => false]);
+            $upload = wp_handle_upload($_FILES['panorama_zip'], ['test_form' => false]);
 
             if (!isset($upload['error'])) {
-                $update_id = isset($_POST['update_id']) ? intval($_POST['update_id']) : 0;
+                $update_id = intval($_POST['update_id'] ?? 0);
+                $post_id = $update_id ?: wp_insert_post([
+                    'post_type' => 'panorama',
+                    'post_title' => 'Panorama ' . date('d/m/Y H:i'),
+                    'post_status' => 'publish',
+                ]);
 
                 if ($update_id) {
-                    $post_id = $update_id;
-                    wp_update_post(['ID' => $post_id]);
-                } else {
-                    $post_id = wp_insert_post([
-                        'post_type' => 'panorama',
-                        'post_title' => 'Panorama ' . date('d/m/Y H:i'),
-                        'post_status' => 'publish',
-                    ]);
+                    wp_update_post(['ID' => $update_id]);
                 }
 
                 update_field('panorama_zip', $upload, $post_id);
-                facile_panorama_unzip_zip($upload['file'], $post_id);
+                far_panorama_unzip_and_prepare($upload['file'], $post_id);
 
-                $redirect_url = admin_url('admin.php?page=facile-panorama-upload&success=1');
-                $redirect_url .= $update_id ? '&update_id=' . $update_id : '&new_id=' . $post_id;
-                wp_redirect($redirect_url);
+                $url = admin_url('admin.php?page=far-panorama-upload&success=1');
+                $url .= $update_id ? '&update_id=' . $update_id : '&new_id=' . $post_id;
+                wp_redirect($url);
                 exit;
             }
         }
     }
 });
 
-// 7) Fonction unzip + wrapper + renommage index.html
-function facile_panorama_unzip_zip($zip_path, $post_id)
+// 5. Suppression panorama
+add_action('admin_init', function () {
+    if (
+        isset($_GET['delete_id']) &&
+        current_user_can('delete_posts') &&
+        check_admin_referer('far_panorama_delete_' . $_GET['delete_id'])
+    ) {
+        $post_id = intval($_GET['delete_id']);
+        wp_delete_post($post_id, true);
+
+        $upload_dir = wp_upload_dir();
+        $path = trailingslashit($upload_dir['basedir']) . 'panoramas/' . $post_id . '/';
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            WP_Filesystem();
+        }
+        $wp_filesystem->delete($path, true);
+
+        wp_redirect(admin_url('admin.php?page=far-panorama-list&deleted=1'));
+        exit;
+    }
+});
+
+// 6. Décompression ZIP + traitement
+function far_panorama_unzip_and_prepare($zip_path, $post_id)
 {
     $upload_dir = wp_upload_dir();
     $dest_dir = trailingslashit($upload_dir['basedir']) . 'panoramas/' . $post_id . '/';
 
-    if (!file_exists($dest_dir) && !wp_mkdir_p($dest_dir)) {
-        error_log("FacilePanorama : Impossible de créer le dossier $dest_dir");
-        return false;
+    if (!file_exists($dest_dir)) {
+        wp_mkdir_p($dest_dir);
     }
 
     $zip = new ZipArchive;
     if ($zip->open($zip_path) === TRUE) {
-
-        if (!$zip->extractTo($dest_dir)) {
-            error_log("FacilePanorama : Échec extraction ZIP vers $dest_dir");
-            $zip->close();
-            return false;
-        }
+        $zip->extractTo($dest_dir);
         $zip->close();
 
-        // Déplacer le contenu de app-files/ vers $dest_dir
         $app_files = $dest_dir . 'app-files/';
         if (is_dir($app_files)) {
-            $files = scandir($app_files);
-            foreach ($files as $file) {
+            foreach (scandir($app_files) as $file) {
                 if ($file === '.' || $file === '..') continue;
-
-                $src = $app_files . $file;
-                $dst = $dest_dir . $file;
-
-                if (file_exists($dst)) {
-                    if (is_dir($dst)) {
-                        rmdir($dst);
-                    } else {
-                        unlink($dst);
-                    }
-                }
-
-                if (!rename($src, $dst)) {
-                    error_log("FacilePanorama : Impossible de déplacer $src vers $dst");
-                }
+                rename($app_files . $file, $dest_dir . $file);
             }
             rmdir($app_files);
         }
 
-        // Renommer index.html en panorama.html
-        $index_path = $dest_dir . 'index.html';
-        $panorama_path = $dest_dir . 'panorama.html';
-
-        if (file_exists($index_path)) {
-            if (file_exists($panorama_path)) unlink($panorama_path);
-
-            if (!rename($index_path, $panorama_path)) {
-                error_log("FacilePanorama : Impossible de renommer index.html en panorama.html");
-            }
-        } else {
-            error_log("FacilePanorama : Fichier index.html manquant dans $dest_dir");
+        if (file_exists($dest_dir . 'index.html')) {
+            rename($dest_dir . 'index.html', $dest_dir . 'panorama.html');
         }
 
-        // Copier le wrapper index.html (ton index.html perso) à la racine de $dest_dir
         $wrapper_src = plugin_dir_path(__FILE__) . 'panorama-wrapper/index.html';
         $wrapper_dst = $dest_dir . 'index.html';
-
         if (file_exists($wrapper_src)) {
-            if (!copy($wrapper_src, $wrapper_dst)) {
-                error_log("FacilePanorama : Échec copie du wrapper index.html vers la racine");
-            }
-        } else {
-            error_log("FacilePanorama : Wrapper index.html manquant dans panorama-wrapper");
+            copy($wrapper_src, $wrapper_dst);
         }
-
-        return true;
-    } else {
-        error_log("FacilePanorama : Impossible d'ouvrir le ZIP $zip_path");
-        return false;
     }
 }
 
-// 8) Shortcode d'affichage
+// 7. Page : Liste des panoramas
+function far_panorama_list_page()
+{
+    $panoramas = get_posts(['post_type' => 'panorama', 'numberposts' => -1]);
+
+    echo '<div class="wrap"><h1>Mes Panoramas</h1>';
+
+    if (isset($_GET['deleted'])) {
+        echo '<div class="notice notice-success"><p>Panorama supprimé avec succès.</p></div>';
+    }
+
+    if (isset($_GET['updated'])) {
+        echo '<div class="notice notice-success"><p>Panorama mis à jour.</p></div>';
+    }
+
+    if (!$panoramas) {
+        echo '<p>Aucun panorama. <a href="' . admin_url('admin.php?page=far-panorama-upload') . '">Ajouter un panorama</a>.</p></div>';
+        return;
+    }
+
+    echo '<table class="wp-list-table widefat fixed striped"><thead><tr><th>Titre</th><th>Shortcode</th><th>Actions</th></tr></thead><tbody>';
+    foreach ($panoramas as $p) {
+        echo '<tr>';
+        echo '<td>' . esc_html($p->post_title) . '</td>';
+        echo '<td><code>[panorama id="' . $p->ID . '"]</code></td>';
+        echo '<td>';
+        echo '<a class="button" href="' . admin_url('admin.php?page=far-panorama-upload&update_id=' . $p->ID) . '">Modifier</a> ';
+        echo '<a class="button button-danger" href="' . wp_nonce_url(admin_url('admin.php?page=far-panorama-list&delete_id=' . $p->ID), 'far_panorama_delete_' . $p->ID) . '" onclick="return confirm(\'Confirmer la suppression ?\')">Supprimer</a>';
+        echo '</td></tr>';
+    }
+    echo '</tbody></table></div>';
+}
+
+// 8. Page : Upload
+function far_panorama_upload_page()
+{
+    $update_id = intval($_GET['update_id'] ?? 0);
+    $is_update = $update_id > 0;
+
+    echo '<div class="wrap"><h1>' . ($is_update ? 'Mettre à jour un panorama' : 'Téléverser un panorama') . '</h1>';
+
+    if (isset($_GET['success'])) {
+        $id = $update_id ?: intval($_GET['new_id']);
+        echo '<div class="notice notice-success"><p>Panorama enregistré avec succès.</p><p>Shortcode : <code>[panorama id="' . $id . '"]</code></p></div>';
+    }
+
+    echo '<form method="post" enctype="multipart/form-data">';
+    wp_nonce_field('far_panorama_upload', 'far_panorama_nonce');
+    echo '<input type="file" name="panorama_zip" accept=".zip" required>';
+    if ($is_update) echo '<input type="hidden" name="update_id" value="' . $update_id . '">';
+    echo '<p><input type="submit" name="submit_panorama" class="button button-primary" value="' . ($is_update ? 'Mettre à jour' : 'Téléverser') . '"></p>';
+    echo '</form></div>';
+}
+
+// 9. Shortcode
 add_shortcode('panorama', function ($atts) {
-    $atts = shortcode_atts(['id' => 0], $atts, 'panorama');
-    $post_id = intval($atts['id']);
-    if (!$post_id) return '<p>Panorama non spécifié.</p>';
+    $post_id = intval($atts['id'] ?? 0);
+    if (!$post_id) return '<p>Panorama invalide.</p>';
 
     $upload_dir = wp_upload_dir();
-    $panorama_url = trailingslashit($upload_dir['baseurl']) . 'panoramas/' . $post_id . '/index.html';
+    $url = trailingslashit($upload_dir['baseurl']) . 'panoramas/' . $post_id . '/index.html';
 
-    return '<iframe src="' . esc_url($panorama_url) . '" width="100%" height="600" style="border:none;"></iframe>';
+    return '<iframe src="' . esc_url($url) . '" width="100%" height="600" style="border:none;"></iframe>';
 });
