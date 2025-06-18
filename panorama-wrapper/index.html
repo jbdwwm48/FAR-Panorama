@@ -7,17 +7,23 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
   <style>
+    html,
+    body {
+      overflow-x: hidden;
+    }
+
     body {
       background: #ffffff;
       margin: 0;
+      padding: 20px 0;
       font-family: Arial, sans-serif;
       color: #333;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      padding: 20px;
     }
+
 
     h2 {
       margin-bottom: 15px;
@@ -42,11 +48,11 @@
     #iframePanorama {
       border: none;
       width: 100%;
-      aspect-ratio: 16 / 9;
+      height: 55vh;
+      max-height: 55vh;
       border-radius: 10px;
       display: block;
-      height: auto;
-      max-height: 55vh;
+      object-fit: cover;
     }
 
     /* Mode plein écran */
