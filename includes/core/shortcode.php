@@ -2,15 +2,20 @@
 
 add_shortcode('panorama', function ($atts) {
     $post_id = intval($atts['id'] ?? 0);
-    if (!$post_id) return '<p>Panorama invalide.</p>';
+    if (!$post_id) {
+        return '<p>Panorama invalide.</p>';
+    }
 
-    // Incrémenter compteur de vues (post meta 'panorama_views')
+    // Incrément du compteur de vues
     $views = intval(get_post_meta($post_id, 'panorama_views', true));
-    $views++;
-    update_post_meta($post_id, 'panorama_views', $views);
+    update_post_meta($post_id, 'panorama_views', $views + 1);
 
+    // Chemin vers l’index.html du panorama
     $upload_dir = wp_upload_dir();
-    $url = trailingslashit($upload_dir['baseurl']) . 'panoramas/' . $post_id . '/index.html';
+    $iframe_url = trailingslashit($upload_dir['baseurl']) . 'panoramas/' . $post_id . '/index.html';
 
-    return '<iframe src="' . esc_url($url) . '" width="100%" height="600" style="border:none;"></iframe>';
+    // Affichage du panorama dans un wrapper
+    return '<div class="far-panorama-wrapper">' .
+        '<iframe src="' . esc_url($iframe_url) . '" class="far-panorama-iframe" allowfullscreen loading="lazy" scrolling="no"></iframe>' .
+        '</div>';
 });

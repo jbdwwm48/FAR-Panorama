@@ -1,4 +1,6 @@
 <?php
+
+// === ADMIN STYLES & SCRIPTS ===
 add_action('admin_enqueue_scripts', function ($hook) {
     error_log('FAR PANORAMA HOOK: ' . $hook);
 
@@ -15,6 +17,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
             [],
             FAR_PANORAMA_VERSION
         );
+
         wp_enqueue_script(
             'far-panorama-admin-script',
             FAR_PANORAMA_URL . 'assets/js/admin-scripts.js',
@@ -23,7 +26,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
             true
         );
 
-        // ✅ Script modale pour bouton "Aperçu"
+        // Script modale pour bouton "Aperçu"
         wp_enqueue_script(
             'far-panorama-preview-modal',
             FAR_PANORAMA_URL . 'assets/js/preview-modal.js',
@@ -32,4 +35,14 @@ add_action('admin_enqueue_scripts', function ($hook) {
             true
         );
     }
+});
+
+// === FRONT STYLES ===
+add_action('wp_enqueue_scripts', function () {
+    wp_enqueue_style(
+        'far-panorama-front-style',
+        FAR_PANORAMA_URL . 'assets/css/front-styles.css',
+        [],
+        FAR_PANORAMA_VERSION
+    );
 });

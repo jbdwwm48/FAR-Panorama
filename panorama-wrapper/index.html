@@ -2,7 +2,7 @@
 <html lang="fr">
 
 <head>
-  <title>Panorama 360° – iLozere</title>
+  <title>Panorama 360° - iLozere</title>
   <meta charset="utf-8" />
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
@@ -10,12 +10,14 @@
     html,
     body {
       overflow-x: hidden;
+      margin: 0;
+      padding: 0 12px;
+      border-radius: 12px;
+      box-sizing: border-box;
+      background: black;
     }
 
     body {
-      background: #ffffff;
-      margin: 0;
-      padding: 20px 0;
       font-family: Arial, sans-serif;
       color: #333;
       display: flex;
@@ -23,7 +25,6 @@
       align-items: center;
       min-height: 100vh;
     }
-
 
     h2 {
       margin-bottom: 15px;
@@ -39,23 +40,26 @@
       align-items: center;
       width: 100%;
       max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem;
       border: 3px solid #6b54a6;
       border-radius: 10px;
       background: black;
       position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
     }
 
     #iframePanorama {
       border: none;
       width: 100%;
-      height: 55vh;
-      max-height: 55vh;
-      border-radius: 10px;
+      aspect-ratio: 16 / 9;
+      height: auto;
+      border-radius: 8px;
       display: block;
       object-fit: cover;
     }
 
-    /* Mode plein écran */
     #panoramaSection:fullscreen {
       position: fixed;
       top: 50%;
@@ -164,7 +168,6 @@
       background-color: #594093;
     }
 
-    /* Responsive paysage mobile */
     @media screen and (max-width: 768px) and (orientation: landscape) {
       #iframePanorama {
         height: auto;

@@ -1,0 +1,27 @@
+.wp-block-embed iframe,
+iframe {
+    max-width: 100% !important;
+    height: auto;
+    border: none !important;
+}
+
+.far-panorama-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+}
+
+.far-panorama-iframe {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 600px;
+    border: none !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
