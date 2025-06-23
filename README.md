@@ -39,13 +39,17 @@ Un menu admin **“Mes Panoramas”** permet de gérer facilement l'import, l'af
 
 ### ✏️ Modifier un panorama
 
-- Depuis la page **Mes Panoramas**, cliquer sur l’icône “modifier”  
+- Depuis la page **Mes Panoramas**, cliquer sur le bouton “Modifier”  
 - Uploader un nouveau ZIP pour remplacer les fichiers (le shortcode reste identique)
 
 ### 🗑️ Supprimer un panorama
 
-- Depuis la liste, cliquer sur l’icône “supprimer”  
+- Depuis la liste, cliquer sur le bouton “Supprimer”  
 - Le post et les fichiers associés sont supprimés du serveur
+
+### 👁️ Aperçu direct
+
+- Un bouton **Aperçu** est disponible dans la liste pour afficher le panorama dans une modale (lightbox) directement depuis le back-office.
 
 ---
 
@@ -79,6 +83,7 @@ far-panorama/
 │   ├── css/
 │   │   └── admin-styles.css
 │   └── js/
+│       └── preview-modal.js
 ├── includes/
 │   ├── admin/                       ← Pages et menus du back-office
 │   │   ├── menu.php
@@ -97,8 +102,20 @@ far-panorama/
 │       └── unzip-handler.php
 ├── panorama-wrapper/               ← Wrapper HTML injecté dans chaque panorama
 │   └── index.html
+├── notes.txt                       ← Fichier ignoré par Git dès v0.2
 └── README.md
 ```
+
+---
+
+## Nouveautés depuis la version 0.1
+
+- Refonte complète de l’interface de la page “Mes Panoramas”
+- Affichage du login auteur dans la liste
+- Compteur de vues par panorama (post meta `panorama_views`)
+- Bouton **Aperçu** avec ouverture dans une modale
+- Refonte UX des boutons : couleurs, hover, accessibilité
+- Refonte du CSS admin (moderne et responsive)
 
 ---
 
