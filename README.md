@@ -1,6 +1,6 @@
 # FAR‑Panorama
 
-**Version 0.2 (dev)**  
+**Version 0.4 (dev)**  
 Plugin WordPress pour intégrer et gérer des panoramas 360° générés avec Marzipano.
 
 ---
@@ -51,6 +51,12 @@ Un menu admin **“Mes Panoramas”** permet de gérer facilement l'import, l'af
 
 - Un bouton **Aperçu** est disponible dans la liste pour afficher le panorama dans une modale (lightbox) directement depuis le back-office.
 
+### 🌐 Intégration front propre
+
+- Le plugin intègre désormais une feuille de style front (`front-styles.css`) chargée automatiquement
+- Elle supprime les marges/blocs vides autour du panorama (notamment le "gap blanc")
+- Le rendu du panorama est désormais **full-width, centré et sans bordures**
+
 ---
 
 ## Structure des fichiers
@@ -79,9 +85,10 @@ Depuis la version 0.2, le plugin adopte une structure **modulaire** :
 ```text
 far-panorama/
 ├── far-panorama.php                 ← Point d'entrée du plugin
-├── assets/                          ← Fichiers CSS/JS backend
+├── assets/                          ← Fichiers CSS/JS
 │   ├── css/
-│   │   └── admin-styles.css
+│   │   ├── admin-styles.css
+│   │   └── front-styles.css
 │   └── js/
 │       └── preview-modal.js
 ├── includes/
@@ -108,14 +115,16 @@ far-panorama/
 
 ---
 
-## Nouveautés depuis la version 0.1
+## Nouveautés depuis la version précedente
 
 - Refonte complète de l’interface de la page “Mes Panoramas”
-- Affichage du login auteur dans la liste
+- Affichage du login auteur dans la liste des panoramas
 - Compteur de vues par panorama (post meta `panorama_views`)
-- Bouton **Aperçu** avec ouverture dans une modale
+- Bouton **Aperçu** avec ouverture dans une modale/Lightbox
 - Refonte UX des boutons : couleurs, hover, accessibilité
 - Refonte du CSS admin (moderne et responsive)
+- **Ajout d’un CSS front (`front-styles.css`) pour corriger differents bugs sur l’affichage public**
+- **Suppression d'un “gap blanc” récurrant sur tous les panoramas + centrage et rendu full-width**
 
 ---
 
