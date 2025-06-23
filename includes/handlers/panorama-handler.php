@@ -1,5 +1,4 @@
 <?php
-
 // Upload ou mise à jour d’un panorama
 add_action('admin_init', function () {
     if (isset($_POST['submit_panorama']) && check_admin_referer('far_panorama_upload', 'far_panorama_nonce')) {
@@ -31,27 +30,46 @@ add_action('admin_init', function () {
     }
 });
 
-// Suppression d’un panorama
+// Suppression sécurisée d’un panorama
 add_action('admin_init', function () {
+    // Vérifier si suppression demandée avec nonce valide
     if (
         isset($_GET['delete_id']) &&
-        current_user_can('delete_posts') &&
+        isset($_GET['_wpnonce']) &&
         check_admin_referer('far_panorama_delete_' . $_GET['delete_id'])
     ) {
         $post_id = intval($_GET['delete_id']);
-        wp_delete_post($post_id, true);
+        $post = get_post($post_id);
 
-        $upload_dir = wp_upload_dir();
-        $path = trailingslashit($upload_dir['basedir']) . 'panoramas/' . $post_id . '/';
-
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-        global $wp_filesystem;
-        if (empty($wp_filesystem)) {
-            WP_Filesystem();
+        // Vérifier que le post existe et est bien un panorama
+        if (!$post || $post->post_type !== 'panorama') {
+            wp_die('Panorama invalide.');
         }
-        $wp_filesystem->delete($path, true);
 
-        wp_redirect(admin_url('admin.php?page=far-panorama-list&deleted=1'));
-        exit;
+        // Vérifier que l'utilisateur est admin ou auteur du panorama
+        if (
+            current_user_can('administrator') ||
+            get_current_user_id() === intval($post->post_author)
+        ) {
+            // Suppression définitive
+            wp_delete_post($post_id, true);
+
+            // Supprimer aussi les fichiers liés au panorama
+            $upload_dir = wp_upload_dir();
+            $path = trailingslashit($upload_dir['basedir']) . 'panoramas/' . $post_id . '/';
+
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            global $wp_filesystem;
+            if (empty($wp_filesystem)) {
+                WP_Filesystem();
+            }
+            $wp_filesystem->delete($path, true);
+
+            // Redirection avec message succès
+            wp_redirect(admin_url('admin.php?page=far-panorama-list&deleted=1'));
+            exit;
+        } else {
+            wp_die('Tu n\'as pas la permission de supprimer ce panorama.');
+        }
     }
 });

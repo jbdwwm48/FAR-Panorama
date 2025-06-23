@@ -1,0 +1,11 @@
+L'utilisateur souhaite mettre en place la gestion des panoramas par utilisateur dans son plugin FAR-Panorama, avec les étapes suivantes :
+1. Associer un panorama à l'utilisateur connecté lors de l'upload.
+2. Afficher uniquement les panoramas de l'utilisateur courant (sauf admin).
+3. Extraire et stocker un fichier `preview.jpg` depuis l'archive ZIP, même s’il est dans un sous-dossier.
+4. Afficher cette preview dans la liste des panoramas.
+5. Ajouter un bouton rouge pour une action à définir.
+
+Compteur de vues – Résumé pour intégration
+🎯 Objectif :
+
+Compter combien de fois un panorama a été affiché en frontend (via le shortcode), et afficher ce compteur dans l’admin (page-list.php) uniquement, avec les mêmes restrictions d’accès que les panoramas eux-mêmes.
