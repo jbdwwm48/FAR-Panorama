@@ -116,3 +116,102 @@
         height: 50vh !important;
     }
 }
+
+/* === Modale Aperçu Panorama === */
+#panoramaModal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#panoramaModal .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 960px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    border-radius: 8px;
+}
+
+#panoramaModal iframe {
+    width: 100%;
+    height: 70vh;
+    border: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+#panoramaModal .close {
+    color: #aaa;
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#panoramaModal .close:hover,
+#panoramaModal .close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+/* === Boutons d'action (Aperçu, Modifier, Supprimer) === */
+.far-panorama-actions .button {
+    margin-right: 8px;
+    padding: 6px 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Aperçu - Bleu */
+.far-panorama-actions .preview-button {
+    color: #2271b1;
+    border: 1px solid #2271b1;
+    background: #fff;
+}
+
+.far-panorama-actions .preview-button:hover {
+    background: #2271b1;
+    color: #fff;
+    transform: scale(1.03);
+}
+
+/* Modifier - Jaune */
+.far-panorama-actions .edit-button {
+    color: #dba617;
+    border: 1px solid #dba617;
+    background: #fff;
+}
+
+.far-panorama-actions .edit-button:hover {
+    background: #dba617;
+    color: #fff;
+    transform: scale(1.03);
+}
+
+/* Supprimer - Rouge */
+.far-panorama-actions .delete-button {
+    color: #b32d2e;
+    border: 1px solid #b32d2e;
+    background: #fff;
+}
+
+.far-panorama-actions .delete-button:hover {
+    background: #b32d2e;
+    color: #fff;
+    transform: scale(1.03);
+}

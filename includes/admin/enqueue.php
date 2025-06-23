@@ -8,7 +8,6 @@ add_action('admin_enqueue_scripts', function ($hook) {
         'mes-panoramas_page_far-panorama-upload',
     ];
 
-
     if (in_array($hook, $allowed_pages, true)) {
         wp_enqueue_style(
             'far-panorama-admin-style',
@@ -19,6 +18,15 @@ add_action('admin_enqueue_scripts', function ($hook) {
         wp_enqueue_script(
             'far-panorama-admin-script',
             FAR_PANORAMA_URL . 'assets/js/admin-scripts.js',
+            [],
+            FAR_PANORAMA_VERSION,
+            true
+        );
+
+        // ✅ Script modale pour bouton "Aperçu"
+        wp_enqueue_script(
+            'far-panorama-preview-modal',
+            FAR_PANORAMA_URL . 'assets/js/preview-modal.js',
             [],
             FAR_PANORAMA_VERSION,
             true
