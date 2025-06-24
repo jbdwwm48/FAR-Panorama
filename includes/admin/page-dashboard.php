@@ -19,12 +19,33 @@ function far_panorama_dashboard_page()
             <a href="<?php echo esc_url($list_url); ?>" class="button button-primary" style="margin-right: 15px; padding: 12px 24px; font-size: 16px;">
                 📋 Voir les panoramas
             </a>
-            <a href="<?php echo esc_url($upload_url); ?>" class="button button-secondary" style="padding: 12px 24px; font-size: 16px;">
+            <button id="toggle-upload-form" class="button button-secondary" style="padding: 12px 24px; font-size: 16px;">
                 ➕ Ajouter un panorama
-            </a>
+            </button>
+
         </div>
 
         <hr style="margin: 40px 0;">
+
+        <div id="upload-form-container" style="display: none; margin-top: 30px;">
+            <?php
+            // On récupère uniquement la partie "formulaire" de page-upload.php
+            $update_id = intval($_GET['update_id'] ?? 0);
+            $is_update = $update_id > 0;
+
+            echo '<h2>Ajouter un panorama</h2>';
+
+            echo '<form method="post" enctype="multipart/form-data" class="far-panorama-upload-form">';
+            wp_nonce_field('far_panorama_upload', 'far_panorama_nonce');
+            echo '<input type="file" name="panorama_zip" accept=".zip" required class="far-panorama-file-input"><br>';
+            if ($is_update) {
+                echo '<input type="hidden" name="update_id" value="' . esc_attr($update_id) . '">';
+            }
+            echo '<input type="submit" name="submit_panorama" class="button button-primary" value="' . ($is_update ? 'Mettre à jour' : 'Téléverser') . '">';
+            echo '</form>';
+            ?>
+        </div>
+
 
         <h2 style="font-size: 1.8em; margin-bottom: 20px;">🚀 Comment ça fonctionne ?</h2>
 
