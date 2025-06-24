@@ -1,6 +1,6 @@
 # FAR‑Panorama
 
-**Version 0.4 (dev)**  
+**Version 0.5**  
 Plugin WordPress pour intégrer et gérer des panoramas 360° générés avec Marzipano.
 
 ---
@@ -33,9 +33,13 @@ Un menu admin **“Mes Panoramas”** permet de gérer facilement l'import, l'af
 
 ### ➕ Ajouter un panorama
 
-- Ouvrir le menu **Mes Panoramas > Ajouter**  
-- Sélectionner un ZIP Marzipano (contenant au moins un `index.html` et un dossier `tiles`)  
+- Ouvrir le menu **Mes Panoramas** puis cliquer sur **"Ajouter un panorama"**
+- Un formulaire d’upload se déplie dynamiquement dans la page (plus de redirection)
+- Sélectionner un ZIP Marzipano (contenant au moins un `index.html` et un dossier `tiles`)
 - Le plugin extrait les fichiers, remplace le wrapper `index.html`, et crée un CPT Panorama
+- Une **section de prévisualisation** s’affiche automatiquement avec :
+  - Le lien vers le panorama
+  - Un **shortcode cliquable pour copier automatiquement** dans le presse-papier
 
 ### ✏️ Modifier un panorama
 
@@ -49,11 +53,12 @@ Un menu admin **“Mes Panoramas”** permet de gérer facilement l'import, l'af
 
 ### 👁️ Aperçu direct
 
-- Un bouton **Aperçu** est disponible dans la liste pour afficher le panorama dans une modale (lightbox) directement depuis le back-office.
+- Un bouton **Aperçu** est disponible dans la liste pour afficher le panorama dans une **modale (lightbox)** directement depuis le back-office
+- Le contenu affiché est le `index.html` personnalisé du panorama concerné
 
 ### 🌐 Intégration front propre
 
-- Le plugin intègre désormais une feuille de style front (`front-styles.css`) chargée automatiquement
+- Le plugin intègre une feuille de style front (`front-styles.css`) chargée automatiquement via le shortcode
 - Elle supprime les marges/blocs vides autour du panorama (notamment le "gap blanc")
 - Le rendu du panorama est désormais **full-width, centré et sans bordures**
 
@@ -70,7 +75,8 @@ Arborescence générée :
 {post_id}/
 ├── tiles/
 ├── index.html        ← wrapper injecté
-└── panorama.html     ← fichier original renommé
+├── panorama.html     ← fichier original renommé
+└── preview.jpg       ← image d’aperçu automatique si présente dans l’archive
 ```
 
 Le wrapper HTML utilisé est stocké dans :  
@@ -85,11 +91,14 @@ Depuis la version 0.2, le plugin adopte une structure **modulaire** :
 ```text
 far-panorama/
 ├── far-panorama.php                 ← Point d'entrée du plugin
-├── assets/                          ← Fichiers CSS/JS
+├── assets/                          ← Fichiers CSS/JS/images
 │   ├── css/
 │   │   ├── admin-styles.css
 │   │   └── front-styles.css
+│   ├── img/
+│   │   └── tuto1.png
 │   └── js/
+│       ├── dashboard-actions.js
 │       └── preview-modal.js
 ├── includes/
 │   ├── admin/                       ← Pages et menus du back-office
@@ -107,24 +116,38 @@ far-panorama/
 │   └── handlers/                   ← Gestion upload / suppression
 │       ├── panorama-handler.php
 │       └── unzip-handler.php
-├── panorama-wrapper/               ← Wrapper HTML injecté dans chaque panorama
+├── panorama-wrapper/
 │   └── index.html
-├── notes.txt                       ← Fichier ignoré par Git dès v0.2
+├── notes.txt
 └── README.md
 ```
 
 ---
 
-## Nouveautés depuis la version précedente
+## Nouveautés / changelog v0.5
 
-- Refonte complète de l’interface de la page “Mes Panoramas”
-- Affichage du login auteur dans la liste des panoramas
-- Compteur de vues par panorama (post meta `panorama_views`)
-- Bouton **Aperçu** avec ouverture dans une modale/Lightbox
-- Refonte UX des boutons : couleurs, hover, accessibilité
-- Refonte du CSS admin (moderne et responsive)
-- **Ajout d’un CSS front (`front-styles.css`) pour corriger differents bugs sur l’affichage public**
-- **Suppression d'un “gap blanc” récurrant sur tous les panoramas + centrage et rendu full-width**
+### ✅ Nouvelles fonctionnalités
+
+- Affichage **inline** du formulaire d’ajout dans le dashboard (plus besoin d’une page dédiée)
+- Ajout d’une **section de prévisualisation** après l’upload avec :
+  - Lien vers le panorama
+  - Shortcode **copiable automatiquement**
+- Intégration d’un bouton **“Aperçu”** (iframe dans une lightbox via modale JS)
+- Suppression du lien du menu admin “Ajouter un panorama” (page toujours accessible en direct)
+- Gestion du bouton “Ajouter un panorama” via JS (affiche/masque dynamiquement le formulaire)
+- Support automatique d’un fichier `preview.jpg` (extrait même s’il est dans un sous-dossier de l’archive ZIP)
+
+### 🔧 Fixs et améliorations
+
+- Correction du **"gap blanc"** en-dessous des panoramas intégrés via shortcode
+- Le wrapper `index.html` injecté gère maintenant correctement l’affichage sans bordures
+- Les fichiers CSS et JS sont désormais enqueue proprement selon le contexte (admin/front)
+- Refonte complète de la page **Mes Panoramas** :
+  - Preview image visible directement dans la liste
+  - Boutons “Modifier”, “Supprimer” et “Aperçu” plus visibles
+  - Style modernisé compatible WordPress
+- Clean du code PHP, structure plus lisible, logique regroupée
+- Sécurité renforcée sur les chemins d’extraction et suppression
 
 ---
 

@@ -1,9 +1,11 @@
+/* Conteneur global de la page */
 .far-panorama-wrap {
     max-width: 900px;
     margin: auto;
     padding: 40px 20px;
 }
 
+/* Titre principal */
 .far-panorama-title {
     text-align: center;
     font-size: 2.4em;
@@ -20,6 +22,7 @@
     margin-top: 30px;
 }
 
+/* Zone info shortcode + texte + explications */
 .panorama-info {
     flex: 1 1 350px;
     max-width: 500px;
@@ -30,49 +33,80 @@
     font-size: 16px;
     color: #2d4739;
     box-shadow: 0 0 8px rgba(128, 204, 136, 0.2);
+    text-align: center;
 }
 
+/* Titres dans la zone info */
 .panorama-info h3,
 .panorama-info h4 {
     margin-top: 0;
     color: #3c6e47;
 }
 
-.panorama-info code,
-.shortcode-copy {
-    display: block;
-    background: #e6fff1;
-    padding: 10px;
-    font-size: 17px;
-    border-radius: 5px;
-    color: #276b38;
-    margin-bottom: 20px;
+/* Wrapper flex pour shortcode + icône copier, centré horizontalement */
+.shortcode-copy-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    user-select: text;
+    font-size: 1.2em;
     cursor: pointer;
+}
+
+/* Style pour la balise code du shortcode */
+.shortcode-text {
     user-select: all;
-    transition: background-color 0.3s ease;
+    cursor: pointer;
+    line-height: 1;
+    padding: 6px 12px;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+    font-family: monospace, monospace;
+    font-size: 1.1rem;
+    outline-offset: 2px;
+    outline: none;
 }
 
-.panorama-info code:hover,
-.shortcode-copy:hover {
-    background-color: #d0f4d4;
+/* Focus visible pour accessibilité */
+.shortcode-text:focus {
+    outline: 2px solid #0073aa;
+    background-color: #e2f0fb;
 }
 
-.panorama-preview {
-    flex: 1 1 500px;
-    max-width: 700px;
+/* Icône copier SVG */
+.copy-icon {
+    cursor: pointer;
+    color: green;
+    width: 14px;
+    height: 14px;
+    transition: color 0.3s ease;
+    flex-shrink: 0;
+}
+
+/* Hover et focus sur icône */
+.copy-icon:hover,
+.copy-icon:focus {
+    color: green;
+    outline: none;
+    filter: drop-shadow(0 0 1px rgb(0, 54, 0));
+}
+
+/* Message de copie */
+.copy-message {
     text-align: center;
+    margin-top: 15px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: green;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
 }
 
-.panorama-preview iframe {
-    width: 100%;
-    height: 65vh;
-    border-radius: 10px;
-    border: none;
-    background: black;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Avant upload */
+/* === Avant upload === */
 .far-panorama-tutorial {
     background: #f9f9f9;
     padding: 20px;
@@ -81,7 +115,7 @@
     margin-bottom: 30px;
 }
 
-/* Formulaire */
+/* Formulaire upload */
 .far-panorama-upload-form {
     text-align: center;
     margin-top: 40px;
@@ -89,6 +123,27 @@
 
 .far-panorama-file-input {
     margin-bottom: 20px;
+}
+
+/* PREVIEW iframe */
+.panorama-preview {
+    flex: 1 1 500px;
+    max-width: 700px;
+    text-align: center;
+    margin-top: 20px;
+    border: none;
+    overflow: hidden;
+}
+
+.panorama-preview iframe,
+.panorama-iframe {
+    width: 100%;
+    height: 65vh;
+    border-radius: 10px;
+    border: none;
+    background: black;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    display: block;
 }
 
 /* Responsive */
@@ -116,6 +171,8 @@
         height: 50vh !important;
     }
 }
+
+/* ============ Le reste du CSS, intact pour les autres pages ============ */
 
 /* === Modale Aperçu Panorama === */
 #panoramaModal {
@@ -187,31 +244,31 @@
 .far-panorama-actions .preview-button:hover {
     background: #2271b1;
     color: #fff;
-    transform: scale(1.03);
+    transform: scale(1.1);
 }
 
 /* Modifier - Jaune */
 .far-panorama-actions .edit-button {
     color: #dba617;
-    border: 1px solid #dba617;
+    border: 2px solid #dba617;
     background: #fff;
 }
 
 .far-panorama-actions .edit-button:hover {
     background: #dba617;
     color: #fff;
-    transform: scale(1.03);
+    transform: scale(1.1);
 }
 
 /* Supprimer - Rouge */
 .far-panorama-actions .delete-button {
     color: #b32d2e;
-    border: 1px solid #b32d2e;
+    border: 2px solid #b32d2e;
     background: #fff;
 }
 
 .far-panorama-actions .delete-button:hover {
     background: #b32d2e;
     color: #fff;
-    transform: scale(1.03);
+    transform: scale(1.1);
 }

@@ -1,14 +1,15 @@
 <?php
 
-define('FAR_PANORAMA_VERSION', '0.2.0');
+define('FAR_PANORAMA_VERSION', '0.5.1');
 define('FAR_PANORAMA_URL', plugin_dir_url(__FILE__));
-
 
 /**
  * Plugin Name: FAR-Panorama
  * Description: Gestion simplifiée de panoramas 360° Marzipano dans WordPress.
- * Version: 0.2.0
+ * Version: 0.5.1
  * Author: Nycalith (JB)
+ * Author URI: https://github.com/jbdwwm48/
+ * Plugin URI: https://github.com/jbdwwm48/FAR-Panorama
  * License: GPL2
  */
 
