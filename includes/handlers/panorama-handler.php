@@ -105,8 +105,10 @@ add_action('admin_init', function () {
             current_user_can('administrator') ||
             get_current_user_id() === intval($post->post_author)
         ) {
+            // Log debugg
+            error_log("Suppression : panorama ID " . $post->ID . " demandé par user " . get_current_user_id());
+
             $deleted = wp_delete_post($post_id, true);
-            error_log("Suppression : wp_delete_post renvoie $deleted pour ID $post_id");
 
             $upload_dir = wp_upload_dir();
             $path = trailingslashit($upload_dir['basedir']) . 'panoramas/' . $post_id . '/';
