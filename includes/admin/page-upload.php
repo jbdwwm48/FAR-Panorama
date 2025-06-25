@@ -2,20 +2,28 @@
 
 function far_panorama_upload_page()
 {
-    $uploaded_id = intval($_GET['new_id'] ?? 0);
+    $uploaded_id = intval($_GET['new_id'] ?? $_GET['update_id'] ?? 0);
     $has_success = isset($_GET['success']) && $uploaded_id > 0;
 
     $upload_url = wp_upload_dir()['baseurl'] . '/panoramas/' . $uploaded_id . '/index.html';
 
     echo '<div class="wrap far-panorama-wrap">';
 
-    echo '<h1 class="far-panorama-title">' . ($has_success ? 'Voici votre panorama prêt à être utilisé' : 'Téléverser un panorama') . '</h1>';
+    $is_update = isset($_GET['update_id']);
+
+    // On affiche soit la notice de succès, soit le titre, jamais les deux ensemble
+    if ($has_success) {
+        // Juste la notice
+        echo '<div class="notice notice-success is-dismissible"><p><strong>✅ Votre panorama a bien été ' . ($is_update ? 'mis à jour' : 'ajouté') . '.</strong></p></div>';
+    } else {
+        // Juste le titre quand on n'a pas encore uploadé
+        echo '<h1 class="far-panorama-title">' . ($is_update ? 'Mettez à jour votre panorama' : 'Téléverser un panorama') . '</h1>';
+    }
 
     if ($has_success) {
         echo '<div class="panorama-upload-container">';
 
         echo '<div class="panorama-info">';
-
         echo '<h3>🎯 Utilisez ce shortcode dans vos pages ou articles :</h3>';
 
 ?>
@@ -24,26 +32,10 @@ function far_panorama_upload_page()
                 <?php echo esc_html('[panorama id="' . $uploaded_id . '"]'); ?>
             </code>
 
-            <svg id="copy-icon" class="copy-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 115.77 122.88" width="14" height="14" aria-label="Copier le shortcode" role="button" tabindex="0" style="flex-shrink:0;">
-                <style type="text/css">
-                    .st0 {
-                        fill-rule: evenodd;
-                        clip-rule: evenodd;
-                    }
-                </style>
-                <g>
-                    <path class="st0" d="M89.62,13.96v7.73h12.19h0.01v0.02c3.85,0.01,7.34,1.57,9.86,4.1c2.5,2.51,4.06,5.98,4.07,9.82h0.02v0.02
-                        v73.27v0.01h-0.02c-0.01,3.84-1.57,7.33-4.1,9.86c-2.51,2.5-5.98,4.06-9.82,4.07v0.02h-0.02h-61.7H40.1v-0.02
-                        c-3.84-0.01-7.34-1.57-9.86-4.1c-2.5-2.51-4.06-5.98-4.07-9.82h-0.02v-0.02V92.51H13.96h-0.01v-0.02c-3.84-0.01-7.34-1.57-9.86-4.1
-                        c-2.5-2.51-4.06-5.98-4.07-9.82H0v-0.02V13.96v-0.01h0.02c0.01-3.85,1.58-7.34,4.1-9.86c2.51-2.5,5.98-4.06,9.82-4.07V0h0.02h61.7
-                        h0.01v0.02c3.85,0.01,7.34,1.57,9.86,4.1c2.5,2.51,4.06,5.98,4.07,9.82h0.02V13.96L89.62,13.96z M79.04,21.69v-7.73v-0.02h0.02
-                        c0-0.91-0.39-1.75-1.01-2.37c-0.61-0.61-1.46-1-2.37-1v0.02h-0.01h-61.7h-0.02v-0.02c-0.91,0-1.75,0.39-2.37,1.01
-                        c-0.61,0.61-1,1.46-1,2.37h0.02v0.01v64.59v0.02h-0.02c0,0.91,0.39,1.75,1.01,2.37c0.61,0.61,1.46,1,2.37,1v-0.02h0.01h12.19V35.65
-                        v-0.01h0.02c0.01-3.85,1.58-7.34,4.1-9.86c2.51-2.5,5.98-4.06,9.82-4.07v-0.02h0.02H79.04L79.04,21.69z M105.18,108.92V35.65v-0.02
-                        h0.02c0-0.91-0.39-1.75-1.01-2.37c-0.61-0.61-1.46-1-2.37-1v0.02h-0.01h-61.7h-0.02v-0.02c-0.91,0-1.75,0.39-2.37,1.01
-                        c-0.61,0.61-1,1.46-1,2.37h0.02v0.01v73.27v0.02h-0.02c0,0.91,0.39,1.75,1.01,2.37c0.61,0.61,1.46,1,2.37,1v-0.02h0.01h61.7h0.02
-                        v0.02c0.91,0,1.75-0.39,2.37-1.01c0.61-0.61,1-1.46,1-2.37h-0.02V108.92L105.18,108.92z" />
-                </g>
+            <!-- 🧩 Ancien SVG restauré -->
+            <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
             </svg>
         </div>
 
@@ -84,9 +76,7 @@ function far_panorama_upload_page()
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(text).then(() => {
                             showMessage('✅ Shortcode copié !', 'green');
-                        }).catch(() => {
-                            fallbackCopy(text);
-                        });
+                        }).catch(() => fallbackCopy(text));
                     } else {
                         fallbackCopy(text);
                     }
@@ -99,25 +89,20 @@ function far_panorama_upload_page()
                     textarea.style.opacity = '0';
                     document.body.appendChild(textarea);
                     textarea.select();
-
                     try {
                         const successful = document.execCommand('copy');
-                        if (successful) {
-                            showMessage('✅ Shortcode copié !', 'green');
-                        } else {
-                            showMessage('❌ Erreur lors de la copie, copie manuelle requise.', 'red');
-                        }
+                        showMessage(successful ? '✅ Shortcode copié !' : '❌ Copie échouée.', successful ? 'green' : 'red');
                     } catch {
-                        showMessage('❌ Erreur lors de la copie, copie manuelle requise.', 'red');
+                        showMessage('❌ Erreur lors de la copie.', 'red');
                     }
-
                     document.body.removeChild(textarea);
                 }
 
+                // Listener sur le code aussi pour copier
                 shortcode.addEventListener('click', () => copyText(shortcode.textContent.trim()));
-                copyIcon.addEventListener('click', () => copyText(shortcode.textContent.trim()));
 
-                copyIcon.addEventListener('keydown', (e) => {
+                copyIcon.addEventListener('click', () => copyText(shortcode.textContent.trim()));
+                copyIcon.addEventListener('keydown', e => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         copyIcon.click();
@@ -128,11 +113,18 @@ function far_panorama_upload_page()
 
 <?php
     } else {
-        // Formulaire upload simple
+        // Pas de message doublon ici, juste le formulaire
         echo '<form method="post" enctype="multipart/form-data" class="far-panorama-upload-form">';
         wp_nonce_field('far_panorama_upload', 'far_panorama_nonce');
+
+        if ($is_update) {
+            echo '<input type="hidden" name="update_id" value="' . $uploaded_id . '">';
+        }
+
         echo '<input type="file" name="panorama_zip" accept=".zip" required class="far-panorama-file-input"><br>';
-        echo '<button type="submit" class="button button-primary far-panorama-upload-btn">Téléverser le panorama</button>';
+        echo '<button type="submit" name="submit_panorama" class="button button-primary far-panorama-upload-btn">';
+        echo $is_update ? 'Mettre à jour le panorama' : 'Téléverser le panorama';
+        echo '</button>';
         echo '</form>';
     }
 
