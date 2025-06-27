@@ -1,4 +1,3 @@
-
 # FAR‑Panorama
 
 **Version 0.5.3**  
@@ -146,8 +145,8 @@ far-panorama/
 
 ## Licence
 
-GPLv2 — libre d’utilisation, modification et redistribution.
+
 
 ---
 
-Développé par **Nycalith (JB)**.
+Développé par **Jean-Baptiste Charbonnier pour Facilearetenir.com**.

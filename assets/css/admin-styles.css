@@ -1,18 +1,42 @@
-/* Conteneur global de la page */
+/* =============================================================================
+    STYLES ADMIN — FAR‑Panorama
+    =============================================================================
+    Ce fichier regroupe tous les styles spécifiques à l’interface admin du plugin,
+    incluant :
+    - le tableau de bord
+    - le formulaire d’upload
+    - la modale d’aperçu
+    - les boutons d’actions
+    - les styles responsive
+    -----------------------------------------------------------------------------
+    Objectif : garder une interface claire, responsive et cohérente avec WP.
+    ============================================================================= */
+
+
+/* =============================================================================
+    STRUCTURE GÉNÉRALE DE LA PAGE
+    ============================================================================ */
+
 .far-panorama-wrap {
+    /* Contrainte de largeur + centrage */
     max-width: 900px;
     margin: auto;
     padding: 40px 20px;
 }
 
-/* Titre principal */
 .far-panorama-title {
+    /* Titre principal centré */
     text-align: center;
     font-size: 2.4em;
     margin-bottom: 30px;
 }
 
-/* Conteneur flex desktop, stack mobile, centré */
+
+/* =============================================================================
+    SECTION FORMULAIRE + PRÉVISUALISATION
+    ============================================================================ */
+
+/* Conteneur principal en flex, empilement mobile */
 .panorama-upload-container {
     display: flex;
     flex-wrap: wrap;
@@ -22,7 +46,7 @@
     margin-top: 30px;
 }
 
-/* Zone info shortcode + texte + explications */
+/* Zone texte d'infos / shortcode */
 .panorama-info {
     flex: 1 1 350px;
     max-width: 500px;
@@ -36,14 +60,13 @@
     text-align: center;
 }
 
-/* Titres dans la zone info */
 .panorama-info h3,
 .panorama-info h4 {
     margin-top: 0;
     color: #3c6e47;
 }
 
-/* Wrapper flex pour shortcode + icône copier, centré horizontalement */
+/* Affichage du shortcode + bouton copier */
 .shortcode-copy-wrapper {
     display: flex;
     align-items: center;
@@ -54,7 +77,7 @@
     cursor: pointer;
 }
 
-/* Style pour la balise code du shortcode */
+/* Style du shortcode <code> */
 .shortcode-text {
     user-select: all;
     cursor: pointer;
@@ -68,13 +91,12 @@
     outline: none;
 }
 
-/* Focus visible pour accessibilité */
 .shortcode-text:focus {
     outline: 2px solid #0073aa;
     background-color: #e2f0fb;
 }
 
-/* Icône copier SVG */
+/* Icône SVG copier */
 .copy-icon {
     cursor: pointer;
     color: green;
@@ -84,7 +106,6 @@
     flex-shrink: 0;
 }
 
-/* Hover et focus sur icône */
 .copy-icon:hover,
 .copy-icon:focus {
     color: green;
@@ -92,7 +113,7 @@
     filter: drop-shadow(0 0 1px rgb(0, 54, 0));
 }
 
-/* Message de copie */
+/* Message "shortcode copié" */
 .copy-message {
     text-align: center;
     margin-top: 15px;
@@ -106,7 +127,7 @@
     margin-bottom: 1rem;
 }
 
-/* === Avant upload === */
+/* Zone tuto avant upload */
 .far-panorama-tutorial {
     background: #f9f9f9;
     padding: 20px;
@@ -115,7 +136,7 @@
     margin-bottom: 30px;
 }
 
-/* Formulaire upload */
+/* Formulaire d’upload */
 .far-panorama-upload-form {
     text-align: center;
     margin-top: 40px;
@@ -125,7 +146,11 @@
     margin-bottom: 20px;
 }
 
-/* PREVIEW iframe */
+
+/* =============================================================================
+    PRÉVISUALISATION IFRAME
+    ============================================================================ */
+
 .panorama-preview {
     flex: 1 1 500px;
     max-width: 700px;
@@ -146,7 +171,11 @@
     display: block;
 }
 
-/* Responsive */
+
+/* =============================================================================
+    RESPONSIVE DESIGN
+    ============================================================================ */
+
 @media screen and (max-width: 768px) {
     .panorama-upload-container {
         flex-direction: column;
@@ -172,9 +201,11 @@
     }
 }
 
-/* ============ Le reste du CSS, intact pour les autres pages ============ */
 
-/* === Modale Aperçu Panorama === */
+/* =============================================================================
+    MODALE — APERÇU PANORAMA
+    ============================================================================ */
+
 #panoramaModal {
     display: none;
     position: fixed;
@@ -224,7 +255,11 @@
     text-decoration: none;
 }
 
-/* === Boutons d'action (Aperçu, Modifier, Supprimer) === */
+
+/* =============================================================================
+    BOUTONS D'ACTIONS (Tableau liste panoramas)
+    ============================================================================ */
+
 .far-panorama-actions .button {
     margin-right: 8px;
     padding: 6px 14px;
@@ -234,7 +269,7 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-/* Aperçu - Bleu */
+/* Aperçu = Bleu */
 .far-panorama-actions .preview-button {
     color: #2271b1;
     border: 1px solid #2271b1;
@@ -247,7 +282,7 @@
     transform: scale(1.1);
 }
 
-/* Modifier - Jaune */
+/* Modifier = Jaune */
 .far-panorama-actions .edit-button {
     color: #dba617;
     border: 2px solid #dba617;
@@ -260,7 +295,7 @@
     transform: scale(1.1);
 }
 
-/* Supprimer - Rouge */
+/* Supprimer = Rouge */
 .far-panorama-actions .delete-button {
     color: #b32d2e;
     border: 2px solid #b32d2e;

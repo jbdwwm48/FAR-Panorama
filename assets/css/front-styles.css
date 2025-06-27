@@ -1,3 +1,23 @@
+/* =============================================================================
+    STYLES FRONT — FAR‑Panorama
+    =============================================================================
+    Ce fichier contient les styles appliqués côté visiteur/public pour l’affichage
+    du shortcode [panorama id="..."] intégré dans un article ou une page.
+
+    Objectif :
+    - Assurer une intégration responsive des iframes Marzipano
+    - Supprimer toute marge/padding indésirable autour du conteneur
+    - Garantir un affichage fluide, propre et compatible avec les thèmes WP
+
+    Ce fichier est chargé via wp_enqueue_scripts (front-end uniquement).
+    ============================================================================= */
+
+
+/* =============================================================================
+    GLOBAL : iframes intégrés dans les blocs (Elementor Guthember etc.)
+    ============================================================================= */
+
+/* Force les iframes à ne pas dépasser leur conteneur */
 .wp-block-embed iframe,
 iframe {
     max-width: 100% !important;
@@ -5,6 +25,12 @@ iframe {
     border: none !important;
 }
 
+
+/* =============================================================================
+    CONTENEUR WRAPPER PANORAMA
+    ============================================================================= */
+
+/* Conteneur principal autour de l’iframe */
 .far-panorama-wrapper {
     margin: 0 !important;
     padding: 0 !important;
@@ -14,11 +40,18 @@ iframe {
     display: block !important;
 }
 
+
+/* =============================================================================
+    IFRAME PANORAMA
+    ============================================================================= */
+
+/* Iframe Marzipano intégré via shortcode */
 .far-panorama-iframe {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
     height: 600px;
+    /* Hauteur fixe pour la preview */
     border: none !important;
     margin: 0 auto !important;
     padding: 0 !important;

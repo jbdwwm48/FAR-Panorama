@@ -1,3 +1,18 @@
+<!-- =============================================================================
+    PANORAMA WRAPPER HTML — FAR-Panorama
+
+    Ce fichier est la page "wrapper" HTML qui charge le panorama 360° 
+    dans une iframe intégrée dans une section stylisée.
+
+    Objectifs principaux :
+    - Offrir une mise en page responsive et propre pour l’iframe panorama.
+    - Gérer le mode plein écran via bouton + raccourcis natifs navigateurs.
+    - Styliser la modale et ses boutons (close, zoom) avec du CSS smooth.
+    - Assurer une bonne expérience utilisateur sur desktop et mobile.
+
+    Ce wrapper est copié dans chaque dossier panorama lors du unzip.
+============================================================================= -->
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -6,15 +21,21 @@
   <meta charset="utf-8" />
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+
+  <!-- Styles intégrés pour tout gérer sans dépendance externe -->
   <style>
+    /* Reset de base et styles généraux du body */
     html,
     body {
       overflow-x: hidden;
+      /* Pas de scroll horizontal */
       margin: 0;
       padding: 0 12px;
       border-radius: 12px;
+      /* coins arrondis */
       box-sizing: border-box;
       background: #f1f1f1;
+      /* fond clair doux */
     }
 
     body {
@@ -24,16 +45,21 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
+      /* écran plein vertical */
     }
 
+    /* Styles pour titres si besoin */
     h2 {
       margin-bottom: 15px;
       font-weight: 700;
       text-align: center;
       color: #6b54a6;
+      /* violet doux */
       user-select: none;
+      /* pas sélectionnable */
     }
 
+    /* Conteneur principal de l’iframe panorama */
     #panoramaSection {
       display: flex;
       flex-direction: column;
@@ -50,16 +76,19 @@
       box-sizing: border-box;
     }
 
+    /* L’iframe elle-même, responsive et clean */
     #iframePanorama {
       border: none;
       width: 100%;
       aspect-ratio: 16 / 9;
+      /* ratio classique vidéo */
       height: auto;
       border-radius: 8px;
       display: block;
       object-fit: cover;
     }
 
+    /* Styles spécifiques quand en plein écran (fullscreen API) */
     #panoramaSection:fullscreen {
       position: fixed;
       top: 50%;
@@ -78,6 +107,7 @@
       align-items: center;
     }
 
+    /* L’iframe en plein écran s’étire parfaitement */
     #panoramaSection:fullscreen #iframePanorama {
       width: 100%;
       height: 100%;
@@ -86,6 +116,7 @@
       object-fit: cover;
     }
 
+    /* Bouton fermer le plein écran, fixé en bas centre */
     #closeFullscreen {
       position: fixed;
       bottom: 50px;
@@ -109,16 +140,20 @@
       cursor: pointer;
     }
 
+    /* Quand visible (en plein écran), bouton devient semi-transparent */
     #closeFullscreen.visible {
       opacity: 0.3;
       pointer-events: auto;
+      /* activé */
     }
 
+    /* Hover du bouton close: opacité et couleur plus marquées */
     #closeFullscreen:hover {
       opacity: 1;
       background-color: #dc3545;
     }
 
+    /* Animation "pulse" autour du bouton visible */
     #closeFullscreen.visible::after {
       content: "";
       position: absolute;
@@ -132,6 +167,7 @@
       z-index: -1;
     }
 
+    /* Définition de l’animation pulse (agrandissement + disparition) */
     @keyframes pulse {
       0% {
         transform: scale(1);
@@ -149,6 +185,7 @@
       }
     }
 
+    /* Bouton "Voir en grand" sous l’iframe */
     .resize-btn {
       margin: 20px 0 0;
       background-color: #6b54a6;
@@ -168,6 +205,7 @@
       background-color: #594093;
     }
 
+    /* Responsive landscape petit écran: on limite la hauteur de l’iframe */
     @media screen and (max-width: 768px) and (orientation: landscape) {
       #iframePanorama {
         height: auto;
@@ -178,18 +216,23 @@
 </head>
 
 <body>
+  <!-- Conteneur principal pour le panorama et le bouton close fullscreen -->
   <section id="panoramaSection">
     <button id="closeFullscreen" aria-label="Quitter le plein écran">✕</button>
+    <!-- iframe qui charge la page panorama.html (Panorama Marzipano) -->
     <iframe id="iframePanorama" src="panorama.html" allowfullscreen frameborder="0"></iframe>
   </section>
 
+  <!-- Bouton pour déclencher le fullscreen -->
   <button id="btnZoomIn" class="resize-btn" aria-label="Zoomer">Voir en grand</button>
 
   <script>
+    // Références DOM pour les éléments interactifs
     const panoramaSection = document.getElementById('panoramaSection');
     const btnZoomIn = document.getElementById('btnZoomIn');
     const closeBtn = document.getElementById('closeFullscreen');
 
+    // Gestion du clic "Voir en grand" : active le mode plein écran
     btnZoomIn.addEventListener('click', () => {
       if (panoramaSection.requestFullscreen) {
         panoramaSection.requestFullscreen();
@@ -200,6 +243,7 @@
       }
     });
 
+    // Gestion du clic sur bouton "fermer" fullscreen
     closeBtn.addEventListener('click', () => {
       if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -210,14 +254,18 @@
       }
     });
 
+    // Met à jour la visibilité du bouton close fullscreen selon l'état fullscreen
     function updateCloseButton() {
       const fullscreenEl = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
       closeBtn.classList.toggle('visible', fullscreenEl === panoramaSection);
     }
 
+    // Ecouteurs natifs pour détecter les changements fullscreen
     document.addEventListener('fullscreenchange', updateCloseButton);
     document.addEventListener('webkitfullscreenchange', updateCloseButton);
     document.addEventListener('msfullscreenchange', updateCloseButton);
+
+    // Appel initial pour ajuster l'état au chargement
     updateCloseButton();
   </script>
 
