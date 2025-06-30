@@ -5,109 +5,99 @@
 // -----------------------------------------------------------------------------
 function far_panorama_list_page()
 {
-    // Sécurité : l'utilisateur doit être connecté pour accéder à cette page
     if (!is_user_logged_in()) {
         wp_die('Tu dois être connecté pour voir cette page.');
     }
 
-    // Récupère l'ID de l'utilisateur courant
     $current_user_id = get_current_user_id();
-
-    // Vérifie si l'utilisateur est administrateur (droits élargis)
     $is_admin = current_user_can('administrator');
 
-    // Prépare les arguments pour récupérer les panoramas
     $args = [
-        'post_type'   => 'panorama', // On cible le CPT 'panorama'
-        'numberposts' => -1,          // Sans limite (récupérer tous)
+        'post_type'   => 'panorama',
+        'numberposts' => -1,
     ];
 
-    // Si pas admin, on filtre pour ne récupérer que les panoramas de l'utilisateur courant
     if (!$is_admin) {
         $args['author'] = $current_user_id;
     }
 
-    // Récupère les panoramas selon les arguments
     $panoramas = get_posts($args);
 
-    // Début de la zone principale avec la classe WordPress "wrap"
     echo '<div class="wrap"><h1>Mes Panoramas</h1>';
 
-    // Affiche un message de succès après suppression si paramètre 'deleted' présent dans l'URL
     if (isset($_GET['deleted'])) {
         echo '<div class="notice notice-success"><p>Panorama supprimé avec succès.</p></div>';
     }
-    // Affiche un message de succès après mise à jour si paramètre 'updated' présent dans l'URL
     if (isset($_GET['updated'])) {
         echo '<div class="notice notice-success"><p>Panorama mis à jour.</p></div>';
     }
 
-    // Si aucun panorama trouvé, on affiche un message invitant à en ajouter
     if (!$panoramas) {
         echo '<p>Aucun panorama. <a href="' . admin_url('admin.php?page=far-panorama-upload') . '">Ajouter un panorama</a>.</p></div>';
-        return; // On sort de la fonction, rien d'autre à afficher
+        return;
     }
 
-    // Construction du tableau listant les panoramas
     echo '<table class="wp-list-table widefat fixed striped">';
     echo '<thead><tr>
             <th>Titre</th>
             <th>Auteur</th>
-            <th>Vues</th>
+            <th>Créé le</th>
+            <th>Mis à jour le</th>
             <th>Shortcode</th>
-            <th>Actions</th>
+            <th style="min-width: 130px;">Actions</th>
         </tr></thead><tbody>';
 
-    // Parcours chaque panorama récupéré pour créer une ligne dans le tableau
     foreach ($panoramas as $p) {
-        // Récupère les infos de l'auteur du post
         $author = get_userdata($p->post_author);
         $author_login = $author ? $author->user_login : 'Inconnu';
 
-        // Récupère le nombre de vues stocké en meta post 'panorama_views'
-        $views_count = intval(get_post_meta($p->ID, 'panorama_views', true));
-
-        // Prépare l'URL du fichier index.html du panorama dans les uploads pour iframe preview
         $upload_dir = wp_upload_dir();
         $iframe_url = trailingslashit($upload_dir['baseurl']) . 'panoramas/' . $p->ID . '/index.html';
 
         echo '<tr>';
-
-        // Affiche le titre du panorama
         echo '<td>' . esc_html($p->post_title) . '</td>';
-
-        // Affiche le login de l'auteur
         echo '<td>' . esc_html($author_login) . '</td>';
-
-        // Affiche le nombre de vues
-        echo '<td>' . $views_count . '</td>';
-
-        // Affiche le shortcode copiable avec attribut data-id pour script JS
+        echo '<td>' . esc_html(get_the_date('d/m/Y H:i', $p)) . '</td>';
+        echo '<td>' . esc_html(get_the_modified_date('d/m/Y H:i', $p)) . '</td>';
         echo '<td><code class="copy-shortcode" data-id="' . $p->ID . '" title="Clique pour copier" style="cursor:pointer;">[panorama id="' . $p->ID . '"]</code></td>';
 
-        // Colonne Actions avec boutons
         echo '<td class="far-panorama-actions">';
-        // Bouton "Aperçu" qui déclenche une modale avec iframe du panorama
-        echo '<button type="button" class="button preview-button preview-panorama" data-url="' . esc_url($iframe_url) . '">Aperçu</button> ';
-        // Lien "Modifier" redirige vers la page upload avec param update_id pour modifier le panorama
-        echo '<a class="button edit-button" href="' . admin_url('admin.php?page=far-panorama-upload&update_id=' . $p->ID) . '">Modifier</a> ';
-        // Lien "Supprimer" avec nonce WordPress pour sécurité, et confirmation JS avant suppression
+        // Bouton Aperçu (œil fin)
+        echo '<button type="button" class="button preview-button preview-panorama" aria-label="Aperçu" data-url="' . esc_url($iframe_url) . '">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+            <circle cx="12" cy="12" r="3" />
+            </svg>
+            </button> ';
+
+        // Bouton Modifier (crayon fin)
+        echo '<a class="button edit-button" href="' . admin_url('admin.php?page=far-panorama-upload&update_id=' . $p->ID) . '" aria-label="Modifier">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
+            </svg>
+        </a> ';
+
+        // Bouton Supprimer (poubelle fin)
         echo '<a class="button delete-button" href="'
             . wp_nonce_url(admin_url('admin.php?page=far-panorama-list&delete_id=' . $p->ID), 'far_panorama_delete_' . $p->ID)
-            . '" onclick="return confirm(\'Confirmer la suppression ?\')">Supprimer</a>';
-        echo '</td>';
+            . '" onclick="return confirm(\'Confirmer la suppression ?\')" aria-label="Supprimer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+            <path d="M10 11v6" />
+            <path d="M14 11v6" />
+            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+            </svg>
+        </a>';
 
+        echo '</td>';
         echo '</tr>';
     }
 
     echo '</tbody></table></div>';
 
-    // --------------------------
-    //    Callbacks HTML et JS
-    // --------------------------
-
-
-    // HTML de la modale cachée qui affichera l'aperçu iframe du panorama
+    // Modale pour aperçu iframe
     echo '
     <div id="panoramaModal" style="display:none;">
         <div class="modal-content">
@@ -116,14 +106,12 @@ function far_panorama_list_page()
         </div>
     </div>';
 
-    // Script JavaScript intégré pour gérer la copie du shortcode au clic
+    // JS gestion copie shortcode
     echo "
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Récupère tous les éléments contenant le shortcode à copier
         const codes = document.querySelectorAll('.copy-shortcode');
 
-        // Fonction visuelle pour indiquer que la copie a réussi (fond bleu temporaire)
         function showFeedback(code) {
             code.style.background = '#cce5ff';
             code.style.transition = 'background 0.3s ease';
@@ -132,7 +120,6 @@ function far_panorama_list_page()
             }, 1000);
         }
 
-        // Fonction fallback de copie (pour navigateurs sans Clipboard API)
         function fallbackCopy(text, code) {
             const textarea = document.createElement('textarea');
             textarea.value = text;
@@ -152,7 +139,6 @@ function far_panorama_list_page()
             document.body.removeChild(textarea);
         }
 
-        // Ajoute un événement clic sur chaque shortcode pour lancer la copie
         codes.forEach(function(code) {
             code.addEventListener('click', function () {
                 const text = code.textContent.trim();

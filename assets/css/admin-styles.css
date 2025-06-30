@@ -259,51 +259,59 @@
 /* =============================================================================
     BOUTONS D'ACTIONS (Tableau liste panoramas)
     ============================================================================ */
+/* Actions boutons FAR-Panorama */
+.far-panorama-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
 
-.far-panorama-actions .button {
-    margin-right: 8px;
-    padding: 6px 14px;
-    font-weight: 600;
+/* Boutons épurés et minimalistes */
+.far-panorama-actions .button,
+.far-panorama-actions button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: #555;
     border-radius: 4px;
-    transition: all 0.2s ease-in-out;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Aperçu = Bleu */
-.far-panorama-actions .preview-button {
-    color: #2271b1;
-    border: 1px solid #2271b1;
-    background: #fff;
+.far-panorama-actions .button svg,
+.far-panorama-actions button svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    pointer-events: none;
 }
 
+/* Hover minimal avec légère teinte et animation */
 .far-panorama-actions .preview-button:hover {
-    background: #2271b1;
-    color: #fff;
+    color: #2271b1;
+    background-color: rgba(34, 113, 177, 0.08);
     transform: scale(1.1);
-}
-
-/* Modifier = Jaune */
-.far-panorama-actions .edit-button {
-    color: #dba617;
-    border: 2px solid #dba617;
-    background: #fff;
 }
 
 .far-panorama-actions .edit-button:hover {
-    background: #dba617;
-    color: #fff;
+    color: #dba617;
+    background-color: rgba(219, 166, 23, 0.08);
     transform: scale(1.1);
-}
-
-/* Supprimer = Rouge */
-.far-panorama-actions .delete-button {
-    color: #b32d2e;
-    border: 2px solid #b32d2e;
-    background: #fff;
 }
 
 .far-panorama-actions .delete-button:hover {
-    background: #b32d2e;
-    color: #fff;
+    color: #b32d2e;
+    background-color: rgba(179, 45, 46, 0.08);
     transform: scale(1.1);
+}
+
+/* Focus accessibilité */
+.far-panorama-actions .button:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 1px;
 }

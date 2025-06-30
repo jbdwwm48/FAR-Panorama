@@ -25,7 +25,7 @@ function far_panorama_upload_page()
     // Affiche soit un message de succès, soit un titre selon le contexte
     if ($has_success) {
         // Message de succès dynamique selon ajout ou mise à jour
-        echo '<div class="notice notice-success is-dismissible"><p><strong>Votre panorama a bien été ' . ($is_update ? 'mis à jour' : 'ajouté') . '.</strong></p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p><strong>Votre panorama a bien été ' . ($is_update ? 'mis à jour ✅' : 'ajouté ✅') . '.</strong></p></div>';
     } else {
         // Titre principal selon si c'est une mise à jour ou un ajout
         echo '<h1 class="far-panorama-title">' . ($is_update ? 'Mettez à jour votre panorama' : 'Téléverser un panorama') . '</h1>';
@@ -38,14 +38,12 @@ function far_panorama_upload_page()
         // Section d'information sur le shortcode à utiliser
         echo '<div class="panorama-info">';
         echo '<h3>Utilisez ce shortcode dans vos pages ou articles :</h3>';
-
 ?>
         <!-- Zone cliquable pour copier le shortcode automatiquement -->
         <div class="shortcode-copy-wrapper" tabindex="0" role="button" aria-label="Copier le shortcode">
             <code id="shortcode-to-copy" class="shortcode-text" style="user-select: all; cursor: pointer;">
                 <?php echo esc_html('[panorama id="' . $uploaded_id . '"]'); ?>
             </code>
-
             <!-- Icône SVG du bouton copier -->
             <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -57,7 +55,6 @@ function far_panorama_upload_page()
         <div id="copy-message" class="copy-message" aria-live="polite" role="alert"></div>
 
         <?php
-        // Explications complémentaires sur l'utilisation du shortcode
         echo '<h4>Comment l’utiliser ?</h4>';
         echo '<p>Cliquez sur le shortcode ci-dessus pour le copier automatiquement.<br> Ensuite, collez-le dans n’importe quelle page, article ou bloc HTML de votre site. Le panorama s’affichera automatiquement.</p>';
         echo '<p>Assurez-vous que la page est en pleine largeur pour une meilleure expérience.</p>';
@@ -78,11 +75,8 @@ function far_panorama_upload_page()
                 const copyIcon = document.getElementById('copy-icon');
                 const shortcode = document.getElementById('shortcode-to-copy');
                 const message = document.getElementById('copy-message');
-
-                // Sécurité : si éléments manquants, on ne fait rien 
                 if (!copyIcon || !shortcode || !message) return;
 
-                // Fonction pour afficher un message temporaire à l'utilisateur
                 function showMessage(text, color) {
                     message.textContent = text;
                     message.style.color = color;
@@ -92,7 +86,6 @@ function far_panorama_upload_page()
                     }, 2500);
                 }
 
-                // Fonction pour copier le texte dans le presse-papiers via l'API Clipboard des navigateur web
                 function copyText(text) {
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(text).then(() => {
@@ -103,12 +96,11 @@ function far_panorama_upload_page()
                     }
                 }
 
-                // Solution de secours pour copier en simulant une sélection + execCommand 
                 function fallbackCopy(text) {
                     const textarea = document.createElement('textarea');
                     textarea.value = text;
-                    textarea.style.position = 'fixed'; // éviter le scroll
-                    textarea.style.opacity = '0'; // invisible
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
                     document.body.appendChild(textarea);
                     textarea.select();
                     try {
@@ -120,12 +112,8 @@ function far_panorama_upload_page()
                     document.body.removeChild(textarea);
                 }
 
-                // Événements sur le texte et l’icône pour déclencher la copie
                 shortcode.addEventListener('click', () => copyText(shortcode.textContent.trim()));
-
                 copyIcon.addEventListener('click', () => copyText(shortcode.textContent.trim()));
-
-                // Accessibilité : copie aussi via touche Entrée ou Espace sur l'icône
                 copyIcon.addEventListener('keydown', e => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
@@ -148,6 +136,9 @@ function far_panorama_upload_page()
         if ($is_update) {
             echo '<input type="hidden" name="update_id" value="' . $uploaded_id . '">';
         }
+
+        // Champ texte pour le titre personnalisé du panorama
+        echo '<input type="text" name="panorama_title" placeholder="Titre du panorama" required class="far-panorama-title-input"><br>';
 
         // Champ fichier pour uploader une archive ZIP
         echo '<input type="file" name="panorama_zip" accept=".zip" required class="far-panorama-file-input"><br>';
