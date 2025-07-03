@@ -12,7 +12,6 @@
     Objectif : garder une interface claire, responsive et cohérente avec WP.
     ============================================================================= */
 
-
 /* =============================================================================
     STRUCTURE GÉNÉRALE DE LA PAGE
     ============================================================================ */
@@ -46,9 +45,15 @@
     margin-top: 30px;
 }
 
-/* Zone texte d'infos / shortcode */
+
+.wrap.far-panorama-wrap .panorama-upload-container {
+    flex-direction: column;
+    align-items: center;
+}
+
+
 .panorama-info {
-    flex: 1 1 350px;
+    flex: 1 1;
     max-width: 500px;
     background-color: #f0fdf4;
     border: 2px solid #80cc88;
@@ -60,13 +65,18 @@
     text-align: center;
 }
 
+.panorama-info p:last-child {
+    margin-bottom: 0.66rem;
+    /* Réduction du gap de ~66% */
+}
+
 .panorama-info h3,
 .panorama-info h4 {
     margin-top: 0;
     color: #3c6e47;
 }
 
-/* Affichage du shortcode + bouton copier */
+
 .shortcode-copy-wrapper {
     display: flex;
     align-items: center;
@@ -146,30 +156,27 @@
     margin-bottom: 20px;
 }
 
-
 /* =============================================================================
     PRÉVISUALISATION IFRAME
     ============================================================================ */
 
 .panorama-preview {
-    flex: 1 1 500px;
-    max-width: 700px;
-    text-align: center;
-    margin-top: 20px;
-    border: none;
-    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 2rem;
+    height: auto;
 }
 
 .panorama-preview iframe,
 .panorama-iframe {
-    width: 100%;
-    height: 65vh;
-    border-radius: 10px;
-    border: none;
-    background: black;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     display: block;
+    width: 100%;
+    height: 80vh;
+    /* ✅ Forcé ici */
+    min-height: 500px;
+    /* ✅ Sécurité pour petits écrans */
 }
+
 
 
 /* =============================================================================
@@ -200,7 +207,6 @@
         height: 50vh !important;
     }
 }
-
 
 /* =============================================================================
     MODALE — APERÇU PANORAMA
@@ -255,18 +261,17 @@
     text-decoration: none;
 }
 
-
 /* =============================================================================
     BOUTONS D'ACTIONS (Tableau liste panoramas)
     ============================================================================ */
 /* Actions boutons FAR-Panorama */
 .far-panorama-actions {
     display: flex;
-    gap: 4px;
+    gap: 6px;
     align-items: center;
 }
 
-/* Boutons épurés et minimalistes */
+/* Boutons actions : minimalistes et alignés */
 .far-panorama-actions .button,
 .far-panorama-actions button {
     width: 32px;
@@ -280,8 +285,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
+/* SVG icônes boutons */
 .far-panorama-actions .button svg,
 .far-panorama-actions button svg {
     width: 18px;
@@ -291,27 +298,472 @@
     pointer-events: none;
 }
 
-/* Hover minimal avec légère teinte et animation */
+/* Hover couleurs distinctes par action */
 .far-panorama-actions .preview-button:hover {
     color: #2271b1;
-    background-color: rgba(34, 113, 177, 0.08);
+    background-color: rgba(34, 113, 177, 0.1);
     transform: scale(1.1);
 }
 
 .far-panorama-actions .edit-button:hover {
     color: #dba617;
-    background-color: rgba(219, 166, 23, 0.08);
+    background-color: rgba(219, 166, 23, 0.1);
     transform: scale(1.1);
 }
 
 .far-panorama-actions .delete-button:hover {
     color: #b32d2e;
-    background-color: rgba(179, 45, 46, 0.08);
+    background-color: rgba(179, 45, 46, 0.1);
     transform: scale(1.1);
 }
 
-/* Focus accessibilité */
+/* Focus accessible pour boutons */
 .far-panorama-actions .button:focus {
     outline: 2px solid #0073aa;
     outline-offset: 1px;
 }
+
+/* Formulaire recherche + filtres */
+.far-panorama-search-form {
+    width: 100%;
+    padding: 0 2rem 1rem;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Côté gauche : recherche + boutons */
+.far-panorama-search-form .search-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-grow: 1;
+    min-width: 280px;
+}
+
+.far-panorama-search-form input[type="search"] {
+    width: 320px;
+    padding: 6px 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+.far-panorama-search-form input[type="search"]:focus {
+    border-color: #0073aa;
+    outline: none;
+}
+
+.far-panorama-search-form button.button,
+.far-panorama-search-form a.button.button-reset {
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.far-panorama-search-form button.button {
+    background-color: #2271b1;
+    color: white;
+}
+
+.far-panorama-search-form button.button:hover {
+    background-color: #1a5a8a;
+}
+
+.far-panorama-search-form a.button.button-reset {
+    background-color: #d63638;
+    color: white;
+}
+
+.far-panorama-search-form a.button.button-reset:hover {
+    background-color: #a32a2b;
+}
+
+.far-panorama-search-form button.disabled,
+.far-panorama-search-form span.button.disabled {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Côté droit : dropdown + pagination */
+.far-panorama-search-form .search-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.search-right label {
+    margin: 0;
+    font-weight: 600;
+    color: #444;
+    display: inline-block;
+    font-size: 0.95rem;
+}
+
+
+.pagination-label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.95rem;
+    user-select: none;
+}
+
+.search-right .pagination-label {
+    margin-right: 8px;
+    white-space: nowrap;
+}
+
+.search-right .pagination-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.search-right select {
+    padding: 7px 14px;
+    border: 1.5px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    background-color: white;
+    color: #222;
+    font-weight: 600;
+    min-width: 80px;
+}
+
+.search-right select:hover,
+.search-right select:focus {
+    border-color: #0073aa;
+    outline: none;
+}
+
+/* =============================================================================
+   CONTENEUR TABLEAU PLEINE LARGEUR (page-list.php)
+   ============================================================================ */
+.far-panorama-table-container {
+    width: 100%;
+    padding: 0 2rem;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+
+/* Tableau à pleine largeur responsive */
+.wp-list-table.far-panorama-table {
+    width: 100%;
+    min-width: 1200px;
+    table-layout: fixed;
+}
+
+.wp-list-table.far-panorama-table tbody tr:last-child td {
+    border-bottom: 1px solid #ddd;
+}
+
+/* En-tête du tableau */
+.wp-list-table.far-panorama-table thead th {
+    text-align: left;
+    padding: 12px 16px;
+    background-color: #f1f1f1;
+    border-bottom: 2px solid #ddd;
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+/* Corps du tableau */
+.wp-list-table.far-panorama-table tbody td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+    font-size: 0.95rem;
+    color: #222;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Actions boutons : flex et espacement */
+.far-panorama-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+/* Boutons actions : minimalistes et alignés */
+.far-panorama-actions .button,
+.far-panorama-actions button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: #555;
+    border-radius: 4px;
+    transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* SVG icônes boutons */
+.far-panorama-actions .button svg,
+.far-panorama-actions button svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    pointer-events: none;
+}
+
+/* Hover couleurs distinctes par action */
+.far-panorama-actions .preview-button:hover {
+    color: #2271b1;
+    background-color: rgba(34, 113, 177, 0.1);
+    transform: scale(1.1);
+}
+
+.far-panorama-actions .edit-button:hover {
+    color: #dba617;
+    background-color: rgba(219, 166, 23, 0.1);
+    transform: scale(1.1);
+}
+
+.far-panorama-actions .delete-button:hover {
+    color: #b32d2e;
+    background-color: rgba(179, 45, 46, 0.1);
+    transform: scale(1.1);
+}
+
+/* Focus accessible pour boutons */
+.far-panorama-actions .button:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 1px;
+}
+
+/* =============================================================================
+    FILTRES DE RECHERCHE
+    ============================================================================ */
+
+.far-panorama-search-form {
+    width: 100%;
+    padding: 0 2rem;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Côté gauche : recherche + boutons */
+.far-panorama-search-form .search-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-grow: 1;
+    min-width: 280px;
+}
+
+.far-panorama-search-form input[type="search"] {
+    width: 320px;
+    padding: 6px 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+.far-panorama-search-form input[type="search"]:focus {
+    border-color: #0073aa;
+    outline: none;
+}
+
+.far-panorama-search-form button.button,
+.far-panorama-search-form a.button.button-reset {
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.far-panorama-search-form button.button {
+    background-color: #2271b1;
+    color: white;
+}
+
+.far-panorama-search-form button.button:hover {
+    background-color: #1a5a8a;
+}
+
+.far-panorama-search-form a.button.button-reset {
+    background-color: #d63638;
+    color: white;
+}
+
+.far-panorama-search-form a.button.button-reset:hover {
+    background-color: #a32a2b;
+}
+
+.far-panorama-search-form button.disabled,
+.far-panorama-search-form span.button.disabled {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Côté droit : dropdown + pagination */
+.far-panorama-search-form .search-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.search-right label {
+    margin-right: 8px;
+    font-weight: 600;
+    color: #555;
+    user-select: none;
+}
+
+.search-right select {
+    padding: 7px 14px;
+    border: 1.5px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    background-color: white;
+    color: #222;
+    font-weight: 600;
+    min-width: 80px;
+}
+
+.search-right select:hover,
+.search-right select:focus {
+    border-color: #0073aa;
+    outline: none;
+}
+
+/* =============================================================================
+    PAGINATION BAS
+    ============================================================================ */
+
+.far-panorama-pagination {
+    width: 100%;
+    padding: 0 2rem;
+    margin-top: 1rem;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.far-panorama-pagination ul {
+    display: flex;
+    gap: 0.4rem;
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    justify-content: center;
+    user-select: none;
+}
+
+.far-panorama-pagination li {
+    user-select: none;
+}
+
+.far-panorama-pagination li a,
+.far-panorama-pagination li span {
+    display: block;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #0073aa;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    user-select: none;
+}
+
+.far-panorama-pagination li a:hover {
+    background-color: #e1f0fb;
+    border-color: #00a0d2;
+    color: #004a75;
+}
+
+.far-panorama-pagination li .current {
+    background-color: #0073aa;
+    color: white;
+    border-color: #0073aa;
+    cursor: default;
+    font-weight: 600;
+}
+
+.far-panorama-pagination li.disabled span {
+    color: #999;
+    cursor: default;
+    border-color: #ddd;
+    background-color: #f5f5f5;
+}
+
+/* =============================================================================
+    RESPONSIVE DESIGN
+    ============================================================================ */
+
+@media (max-width: 1200px) {
+    .wp-list-table.far-panorama-table {
+        min-width: 900px;
+    }
+}
+
+@media (max-width: 992px) {
+    .wp-list-table.far-panorama-table {
+        min-width: 700px;
+    }
+
+    .far-panorama-search-form input[type="search"] {
+        width: 100%;
+        max-width: 280px;
+    }
+}
+
+@media (max-width: 600px) {
+    .far-panorama-search-form {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .far-panorama-search-form .search-left,
+    .far-panorama-search-form .search-right {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .far-panorama-search-form input[type="search"] {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+/* =============================================================================
+    FIN DU FICHIER FAR‑Panorama admin-styles.css
+    ============================================================================= */

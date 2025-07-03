@@ -23,7 +23,11 @@ function far_panorama_list_page()
 
     $panoramas = get_posts($args);
 
+<<<<<<< HEAD
     echo '<div class="wrap"><h1>Mes Panoramas</h1>';
+=======
+    echo '<h1 class="far-panorama-title">Mes Panoramas</h1>';
+>>>>>>> 3453023 (Amélioration affichage, fix divers alignements et styles)
 
     if (isset($_GET['deleted'])) {
         echo '<div class="notice notice-success"><p>Panorama supprimé avec succès.</p></div>';
@@ -32,12 +36,71 @@ function far_panorama_list_page()
         echo '<div class="notice notice-success"><p>Panorama mis à jour.</p></div>';
     }
 
+<<<<<<< HEAD
+=======
+    // Formulaire filtre + pagination + dropdown en haut
+    echo '<form method="get" class="far-panorama-search-form">';
+    echo '<input type="hidden" name="page" value="far-panorama-list">';
+
+    // Recherche + bouton Filtrer + Reset (gauche)
+    echo '<div class="search-left">';
+    echo '<input type="search" name="search" placeholder="Rechercher par titre ou auteur..." value="' . esc_attr($search) . '" autocomplete="off">';
+    echo '<button type="submit" class="button">Filtrer</button>';
+    if ($search) {
+        echo '<a href="' . admin_url('admin.php?page=far-panorama-list') . '" class="button button-reset">Supprimer les filtres</a>';
+    }
+    echo '</div>';
+
+    // Dropdown + pagination (droite)
+    echo '<div class="search-right">';
+    echo '<div class="pagination-wrapper">'; // <-- wrapper ajouté
+    echo '<label class="pagination-label" for="posts_per_page">Afficher :</label>';
+    echo '<select id="posts_per_page" name="posts_per_page" onchange="this.form.submit()">';
+    foreach ([10, 25, 50] as $num) {
+        $selected = ($posts_per_page === $num) ? 'selected' : '';
+        echo "<option value=\"$num\" $selected>$num</option>";
+    }
+    echo '</select>';
+    echo '<span class="pagination-label">par page</span>';
+    echo '</div>'; // fin pagination-wrapper
+
+    // Pagination custom avec type array
+    $pagination_links = paginate_links([
+        'base'      => add_query_arg('paged', '%#%'),
+        'format'    => '',
+        'current'   => $paged,
+        'total'     => $query->max_num_pages,
+        'prev_text' => '‹ Précédent',
+        'next_text' => 'Suivant ›',
+        'type'      => 'array',
+    ]);
+
+    if (!empty($pagination_links) && is_array($pagination_links)) {
+        echo '<nav class="far-panorama-pagination" aria-label="Pagination des panoramas">';
+        echo '<ul class="far-panorama-pagination-list">';
+        foreach ($pagination_links as $link) {
+            $active_class = strpos($link, 'current') !== false ? 'active' : '';
+            echo '<li class="far-panorama-pagination-item ' . $active_class . '">' . $link . '</li>';
+        }
+        echo '</ul>';
+        echo '</nav>';
+    }
+
+    echo '</div>'; // fin search-right
+    echo '</form>';
+
+>>>>>>> 3453023 (Amélioration affichage, fix divers alignements et styles)
     if (!$panoramas) {
         echo '<p>Aucun panorama. <a href="' . admin_url('admin.php?page=far-panorama-upload') . '">Ajouter un panorama</a>.</p></div>';
         return;
     }
 
+<<<<<<< HEAD
     echo '<table class="wp-list-table widefat fixed striped">';
+=======
+    echo '<div class="far-panorama-table-container">';
+    echo '<table class="wp-list-table widefat fixed striped far-panorama-table">';
+>>>>>>> 3453023 (Amélioration affichage, fix divers alignements et styles)
     echo '<thead><tr>
             <th>Titre</th>
             <th>Auteur</th>
@@ -97,7 +160,11 @@ function far_panorama_list_page()
 
     echo '</tbody></table></div>';
 
+<<<<<<< HEAD
     // Modale pour aperçu iframe
+=======
+    // Modale iframe sans style inline
+>>>>>>> 3453023 (Amélioration affichage, fix divers alignements et styles)
     echo '
     <div id="panoramaModal" style="display:none;">
         <div class="modal-content">
