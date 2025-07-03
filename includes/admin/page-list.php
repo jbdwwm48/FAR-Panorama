@@ -12,22 +12,32 @@ function far_panorama_list_page()
     $current_user_id = get_current_user_id();
     $is_admin = current_user_can('administrator');
 
+    // 1. Initialisation variables GET / valeurs par défaut
+    $search = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
+    $paged = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+    $posts_per_page = isset($_GET['posts_per_page']) ? intval($_GET['posts_per_page']) : 10;
+
+    // 2. Construction des arguments WP_Query
     $args = [
-        'post_type'   => 'panorama',
-        'numberposts' => -1,
+        'post_type'      => 'panorama',
+        'posts_per_page' => $posts_per_page,
+        'paged'          => $paged,
+        'orderby'        => 'date',
+        'order'          => 'DESC',
     ];
 
     if (!$is_admin) {
         $args['author'] = $current_user_id;
     }
 
-    $panoramas = get_posts($args);
+    if ($search) {
+        $args['s'] = $search;
+    }
 
-<<<<<<< HEAD
-    echo '<div class="wrap"><h1>Mes Panoramas</h1>';
-=======
+    // 3. WP_Query pour paginer + filtrer
+    $query = new WP_Query($args);
+
     echo '<h1 class="far-panorama-title">Mes Panoramas</h1>';
->>>>>>> 3453023 (Amélioration affichage, fix divers alignements et styles)
 
     if (isset($_GET['deleted'])) {
         echo '<div class="notice notice-success"><p>Panorama supprimé avec succès.</p></div>';
@@ -36,9 +46,7 @@ function far_panorama_list_page()
         echo '<div class="notice notice-success"><p>Panorama mis à jour.</p></div>';
     }
 
-<<<<<<< HEAD
-=======
-    // Formulaire filtre + pagination + dropdown en haut
+    // 4. Formulaire filtre + pagination + dropdown en haut
     echo '<form method="get" class="far-panorama-search-form">';
     echo '<input type="hidden" name="page" value="far-panorama-list">';
 
@@ -53,7 +61,7 @@ function far_panorama_list_page()
 
     // Dropdown + pagination (droite)
     echo '<div class="search-right">';
-    echo '<div class="pagination-wrapper">'; // <-- wrapper ajouté
+    echo '<div class="pagination-wrapper">';
     echo '<label class="pagination-label" for="posts_per_page">Afficher :</label>';
     echo '<select id="posts_per_page" name="posts_per_page" onchange="this.form.submit()">';
     foreach ([10, 25, 50] as $num) {
@@ -62,7 +70,7 @@ function far_panorama_list_page()
     }
     echo '</select>';
     echo '<span class="pagination-label">par page</span>';
-    echo '</div>'; // fin pagination-wrapper
+    echo '</div>';
 
     // Pagination custom avec type array
     $pagination_links = paginate_links([
@@ -89,18 +97,14 @@ function far_panorama_list_page()
     echo '</div>'; // fin search-right
     echo '</form>';
 
->>>>>>> 3453023 (Amélioration affichage, fix divers alignements et styles)
-    if (!$panoramas) {
-        echo '<p>Aucun panorama. <a href="' . admin_url('admin.php?page=far-panorama-upload') . '">Ajouter un panorama</a>.</p></div>';
+    // 5. Vérifie si y'a des posts paginés à afficher
+    if (!$query->have_posts()) {
+        echo '<p>Aucun panorama. <a href="' . admin_url('admin.php?page=far-panorama-upload') . '">Ajouter un panorama</a>.</p>';
         return;
     }
 
-<<<<<<< HEAD
-    echo '<table class="wp-list-table widefat fixed striped">';
-=======
     echo '<div class="far-panorama-table-container">';
     echo '<table class="wp-list-table widefat fixed striped far-panorama-table">';
->>>>>>> 3453023 (Amélioration affichage, fix divers alignements et styles)
     echo '<thead><tr>
             <th>Titre</th>
             <th>Auteur</th>
@@ -110,19 +114,23 @@ function far_panorama_list_page()
             <th style="min-width: 130px;">Actions</th>
         </tr></thead><tbody>';
 
-    foreach ($panoramas as $p) {
-        $author = get_userdata($p->post_author);
+    // 6. Boucle WP_Query
+    while ($query->have_posts()) {
+        $query->the_post();
+        global $post;
+
+        $author = get_userdata($post->post_author);
         $author_login = $author ? $author->user_login : 'Inconnu';
 
         $upload_dir = wp_upload_dir();
-        $iframe_url = trailingslashit($upload_dir['baseurl']) . 'panoramas/' . $p->ID . '/index.html';
+        $iframe_url = trailingslashit($upload_dir['baseurl']) . 'panoramas/' . $post->ID . '/index.html';
 
         echo '<tr>';
-        echo '<td>' . esc_html($p->post_title) . '</td>';
+        echo '<td>' . esc_html(get_the_title()) . '</td>';
         echo '<td>' . esc_html($author_login) . '</td>';
-        echo '<td>' . esc_html(get_the_date('d/m/Y H:i', $p)) . '</td>';
-        echo '<td>' . esc_html(get_the_modified_date('d/m/Y H:i', $p)) . '</td>';
-        echo '<td><code class="copy-shortcode" data-id="' . $p->ID . '" title="Clique pour copier" style="cursor:pointer;">[panorama id="' . $p->ID . '"]</code></td>';
+        echo '<td>' . esc_html(get_the_date('d/m/Y H:i')) . '</td>';
+        echo '<td>' . esc_html(get_the_modified_date('d/m/Y H:i')) . '</td>';
+        echo '<td><code class="copy-shortcode" data-id="' . $post->ID . '" title="Clique pour copier" style="cursor:pointer;">[panorama id="' . $post->ID . '"]</code></td>';
 
         echo '<td class="far-panorama-actions">';
         // Bouton Aperçu (œil fin)
@@ -134,7 +142,7 @@ function far_panorama_list_page()
             </button> ';
 
         // Bouton Modifier (crayon fin)
-        echo '<a class="button edit-button" href="' . admin_url('admin.php?page=far-panorama-upload&update_id=' . $p->ID) . '" aria-label="Modifier">
+        echo '<a class="button edit-button" href="' . admin_url('admin.php?page=far-panorama-upload&update_id=' . $post->ID) . '" aria-label="Modifier">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 20h9" />
             <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
@@ -143,7 +151,7 @@ function far_panorama_list_page()
 
         // Bouton Supprimer (poubelle fin)
         echo '<a class="button delete-button" href="'
-            . wp_nonce_url(admin_url('admin.php?page=far-panorama-list&delete_id=' . $p->ID), 'far_panorama_delete_' . $p->ID)
+            . wp_nonce_url(admin_url('admin.php?page=far-panorama-list&delete_id=' . $post->ID), 'far_panorama_delete_' . $post->ID)
             . '" onclick="return confirm(\'Confirmer la suppression ?\')" aria-label="Supprimer">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="3 6 5 6 21 6" />
@@ -157,14 +165,11 @@ function far_panorama_list_page()
         echo '</td>';
         echo '</tr>';
     }
+    wp_reset_postdata();
 
     echo '</tbody></table></div>';
 
-<<<<<<< HEAD
     // Modale pour aperçu iframe
-=======
-    // Modale iframe sans style inline
->>>>>>> 3453023 (Amélioration affichage, fix divers alignements et styles)
     echo '
     <div id="panoramaModal" style="display:none;">
         <div class="modal-content">
@@ -206,19 +211,40 @@ function far_panorama_list_page()
             document.body.removeChild(textarea);
         }
 
-        codes.forEach(function(code) {
-            code.addEventListener('click', function () {
-                const text = code.textContent.trim();
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(() => {
+        codes.forEach(code => {
+            code.addEventListener('click', () => {
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(code.textContent.trim()).then(() => {
                         showFeedback(code);
                     }).catch(() => {
-                        fallbackCopy(text, code);
+                        fallbackCopy(code.textContent.trim(), code);
                     });
                 } else {
-                    fallbackCopy(text, code);
+                    fallbackCopy(code.textContent.trim(), code);
                 }
             });
+        });
+
+        // Modale preview
+        const modal = document.getElementById('panoramaModal');
+        const iframe = document.getElementById('panoramaIframe');
+        const closeBtn = modal.querySelector('.close');
+        document.querySelectorAll('.preview-panorama').forEach(button => {
+            button.addEventListener('click', () => {
+                const url = button.getAttribute('data-url');
+                iframe.src = url;
+                modal.style.display = 'block';
+            });
+        });
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            iframe.src = '';
+        });
+        window.addEventListener('click', e => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                iframe.src = '';
+            }
         });
     });
     </script>
