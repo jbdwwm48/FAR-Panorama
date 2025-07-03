@@ -30,12 +30,10 @@
     margin-bottom: 30px;
 }
 
-
 /* =============================================================================
     SECTION FORMULAIRE + PRÉVISUALISATION
     ============================================================================ */
 
-/* Conteneur principal en flex, empilement mobile */
 .panorama-upload-container {
     display: flex;
     flex-wrap: wrap;
@@ -45,12 +43,10 @@
     margin-top: 30px;
 }
 
-
 .wrap.far-panorama-wrap .panorama-upload-container {
     flex-direction: column;
     align-items: center;
 }
-
 
 .panorama-info {
     flex: 1 1;
@@ -67,7 +63,6 @@
 
 .panorama-info p:last-child {
     margin-bottom: 0.66rem;
-    /* Réduction du gap de ~66% */
 }
 
 .panorama-info h3,
@@ -75,7 +70,6 @@
     margin-top: 0;
     color: #3c6e47;
 }
-
 
 .shortcode-copy-wrapper {
     display: flex;
@@ -107,7 +101,8 @@
 }
 
 /* Icône SVG copier */
-.copy-icon {
+.copy-icon,
+#copy-icon {
     cursor: pointer;
     color: green;
     width: 14px;
@@ -117,7 +112,9 @@
 }
 
 .copy-icon:hover,
-.copy-icon:focus {
+.copy-icon:focus,
+#copy-icon:hover,
+#copy-icon:focus {
     color: green;
     outline: none;
     filter: drop-shadow(0 0 1px rgb(0, 54, 0));
@@ -152,9 +149,100 @@
     margin-top: 40px;
 }
 
-.far-panorama-file-input {
-    margin-bottom: 20px;
+/* Custom file upload wrapper pour un champ fichier stylé */
+.custom-file-upload-wrapper {
+    position: relative;
+    width: 33%;
+    margin: 20px auto 30px auto;
+    font-family: inherit;
 }
+
+.far-panorama-file-input {
+    position: absolute;
+    width: 100%;
+    height: 40px;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+    top: 0;
+    left: 0;
+}
+
+.custom-file-upload-label {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #2271b1;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 3px 8px rgba(34, 113, 177, 0.5);
+    transition: background-color 0.3s ease;
+    z-index: 1;
+}
+
+.custom-file-upload-label:hover,
+.custom-file-upload-label:focus {
+    background-color: #1a5a8a;
+    outline: none;
+}
+
+.file-selected-text {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
+    user-select: none;
+    font-style: italic;
+}
+
+/* Nouveau bloc harmonisé pour le dashboard */
+.upload-form-wrapper {
+    background-color: #ffffff;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.upload-form-wrapper input[type="file"],
+.upload-form-wrapper input[type="text"] {
+    margin: 20px 0;
+    padding: 10px;
+    width: 100%;
+    max-width: 90%;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.upload-form-wrapper input[type="submit"],
+.upload-form-wrapper button[type="submit"] {
+    margin-top: 20px;
+    padding: 10px 24px;
+    font-size: 16px;
+    background-color: #2271b1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.upload-form-wrapper input[type="submit"]:hover,
+.upload-form-wrapper button[type="submit"]:hover {
+    background-color: #1a5a8a;
+}
+
+
 
 /* =============================================================================
     PRÉVISUALISATION IFRAME

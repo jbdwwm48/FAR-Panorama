@@ -42,32 +42,35 @@ function far_panorama_dashboard_page()
 
         <!-- Formulaire d’ajout de panorama (initialement masqué) -->
         <div id="upload-form-container" style="display: none; margin-top: 30px;">
-            <?php
-            // Gestion du mode "mise à jour" si un update_id est présent dans l’URL
-            $update_id = intval($_GET['update_id'] ?? 0);
-            $is_update = $update_id > 0;
 
-            echo '<h2>Ajouter un panorama</h2>';
+            <h2 class="far-panorama-form-title">Ajouter un panorama</h2>
 
-            // Formulaire d'upload
-            echo '<form method="post" enctype="multipart/form-data" class="far-panorama-upload-form">';
+            <form method="post" enctype="multipart/form-data" class="far-panorama-upload-form">
 
-            // Protection sécurité WordPress (anti-CSRF(Cross-Site Request Forgery))
-            wp_nonce_field('far_panorama_upload', 'far_panorama_nonce');
+                <!-- Protection sécurité WordPress -->
+                <?php wp_nonce_field('far_panorama_upload', 'far_panorama_nonce'); ?>
 
-            // Champ pour sélectionner une archive ZIP
-            echo '<input type="file" name="panorama_zip" accept=".zip" required class="far-panorama-file-input"><br>';
+                <div class="far-panorama-form-field">
+                    <label for="panorama_title">Titre du panorama :</label><br>
+                    <input type="text" name="panorama_title" id="panorama_title" required class="far-panorama-text-input" placeholder="Ex : Mon super panorama">
+                </div>
 
-            // Si mise à jour → champ caché pour passer l'ID à panorama-handler.php
-            if ($is_update) {
-                echo '<input type="hidden" name="update_id" value="' . esc_attr($update_id) . '">';
-            }
+                <div class="far-panorama-form-field">
+                    <label for="panorama_zip">Archive ZIP à importer :</label><br>
+                    <div class="custom-file-upload-wrapper">
+                        <input type="file" name="panorama_zip" id="panorama_zip" accept=".zip" required class="far-panorama-file-input" />
+                        <label for="panorama_zip" class="custom-file-upload-label">
+                            Parcourir un fichier ZIP...
+                        </label>
+                        <span class="file-selected-text">Aucun fichier sélectionné</span>
+                    </div>
+                </div>
 
-            // Bouton de soumission (texte adaptatif selon le contexte)
-            echo '<input type="submit" name="submit_panorama" class="button button-primary" value="' . ($is_update ? 'Mettre à jour' : 'Téléverser') . '">';
+                <div class="far-panorama-form-actions">
+                    <input type="submit" name="submit_panorama" class="button button-primary" value="Téléverser">
+                </div>
 
-            echo '</form>';
-            ?>
+            </form>
         </div>
 
         <!-- Section "Comment ça fonctionne ?" avec 3 étapes illustrées -->
@@ -101,6 +104,7 @@ function far_panorama_dashboard_page()
         </p>
 
     </div>
+
 
 <?php
 }
